@@ -32,8 +32,8 @@ class AuthenticationView extends GetView<AuthenticationController> {
             // Text Widget
             const Text(
               'Cari rekomendasi trip, rencanakan sesuai dengan keinginan anda',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.left,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             const SizedBox(height: 20), // Spacing
 
