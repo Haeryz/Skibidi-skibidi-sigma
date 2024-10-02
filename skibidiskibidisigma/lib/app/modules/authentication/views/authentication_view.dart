@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sign_in_button/sign_in_button.dart';
+import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 import '../controllers/authentication_controller.dart';
 
 class AuthenticationView extends GetView<AuthenticationController> {
@@ -15,7 +16,8 @@ class AuthenticationView extends GetView<AuthenticationController> {
         backgroundColor: Colors.white,
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0), // Equivalent to Tailwind's px-20
+        padding: const EdgeInsets.symmetric(
+            horizontal: 20.0), // Equivalent to Tailwind's px-20
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
@@ -30,8 +32,8 @@ class AuthenticationView extends GetView<AuthenticationController> {
             // Text Widget
             const Text(
               'Cari rekomendasi trip, rencanakan sesuai dengan keinginan anda',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontWeight: FontWeight.bold),
+              textAlign: TextAlign.left,
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
             ),
             const SizedBox(height: 20), // Spacing
 
@@ -73,7 +75,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
               width: double.infinity, // Ensure the button is the same width
               child: ElevatedButton(
                 onPressed: () {
-                  // Add sign-in action
+                  Get.toNamed(Routes.PROFILE);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
@@ -99,7 +101,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
               child: SignInButtonBuilder(
                 backgroundColor: Colors.white, // Background color
                 onPressed: () {
-                  // Add Google sign-in action
+                  // sign in email
                 },
                 text: 'Sign in menggunakan email',
                 textColor: Colors.black,
@@ -109,7 +111,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
                   borderRadius: BorderRadius.circular(30.0), // Rounded corners
                 ),
                 padding: const EdgeInsets.symmetric(
-                  vertical: 15.0, 
+                  vertical: 15.0,
                   horizontal: 20.0, // Same padding as other buttons
                 ),
               ),
@@ -119,20 +121,15 @@ class AuthenticationView extends GetView<AuthenticationController> {
 
             SizedBox(
               width: double.infinity,
-              child: SignInButton(
-                Buttons.google,
-                text: 'Sign in menggunakan Google',
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(30.0)
-                ),
-                padding: const EdgeInsets.symmetric(
-                  vertical: 15.0,
-                  horizontal: 20.0,
-                ), 
-                onPressed: () {
-
-                }
-                ),
+              child: SignInButton(Buttons.google,
+                  text: 'Sign in menggunakan Google',
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30.0)),
+                  padding: const EdgeInsets.symmetric(
+                    vertical: 15.0,
+                    horizontal: 20.0,
+                  ),
+                  onPressed: () {}),
             )
           ],
         ),
