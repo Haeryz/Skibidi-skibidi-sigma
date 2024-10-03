@@ -26,7 +26,7 @@ class HomeView extends GetView<HomeController> {
             ),
             CircleAvatar(
               backgroundImage: AssetImage(
-                  'lib/assets/icon/sigma.png'), // Ganti dengan path gambar profil
+                  'assets/icon/sigma.png'), // Ganti dengan path gambar profil
             ),
           ],
         ),
@@ -107,12 +107,12 @@ class HomeView extends GetView<HomeController> {
                     children: [
                       _recommendationCard(
                         imagePath:
-                            'lib/assets/icon/bromo.png', // Ganti dengan path gambar
+                            'assets/icon/bromo.png', // Ganti dengan path gambar
                         title: '1 Day - Tour Bromo Sunrise',
                       ),
                       _recommendationCard(
                         imagePath:
-                            'lib/assets/icon/pantai.png', // Ganti dengan path gambar
+                            'assets/icon/pantai.png', // Ganti dengan path gambar
                         title: '1 Day - Pantai Balekambang',
                       ),
                     ],
