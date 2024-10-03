@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "447844619461",
+    "project_id": "praktikummobile-4e7de",
+    "storage_bucket": "praktikummobile-4e7de.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:447844619461:android:2bd228b7bd3e7336b58cac",
+        "android_client_info": {
+          "package_name": "com.example.skibidiskibidisigma"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBe_GL_IWa_1McdqTPHszYGxca97A9efII"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
