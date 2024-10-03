@@ -226,7 +226,7 @@ class BuatTripForm extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
-              child: Text(
+              child: const Text(
                 'Buat Trip',
                 style: TextStyle(color: Colors.white), // Ensures the text is white
               ),

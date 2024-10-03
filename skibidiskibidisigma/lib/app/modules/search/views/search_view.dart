@@ -63,7 +63,7 @@ class SearchView extends GetView<local.SearchController> {
                               controller.isLocationActive.value
                                   ? 'Lokasi Aktif'
                                   : 'Aktifkan Lokasi',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 color: Colors.orange,
                                 fontWeight: FontWeight.bold,
                               ),
