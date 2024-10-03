@@ -15,7 +15,7 @@ class SplashScreenView extends StatelessWidget {
     return AnimatedSplashScreen(
       duration: 3000, 
       splash: Image.asset('assets/icon/splash.png'), 
-      nextScreen: const PlanView(), 
+      nextScreen: const AuthenticationView(), 
       splashTransition: SplashTransition.scaleTransition,
       backgroundColor: Colors.blue,
     );

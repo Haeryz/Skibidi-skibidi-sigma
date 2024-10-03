@@ -128,7 +128,13 @@ class HomeView extends GetView<HomeController> {
         currentIndex: 0,
         onTap: (index) {
           if (index == 0) {
+            Get.toNamed(Routes.HOME);
+          } else if (index == 1){
+            Get.toNamed(Routes.SEARCH);
+          } else if (index == 2){
             Get.toNamed(Routes.PLAN);
+          } else {
+            print('Feature not available yet');
           }
         },
         items: const [
