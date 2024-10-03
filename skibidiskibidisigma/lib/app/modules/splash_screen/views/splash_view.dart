@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/authentication/views/authentication_view.dart';
 import '../../home/views/home_view.dart'; 
+import 'package:skibidiskibidisigma/app/modules/search/views/search_view.dart';
 
 class SplashScreenView extends StatelessWidget {
-  const SplashScreenView({Key? key}) : super(key: key);
+  const SplashScreenView({super.key});
 
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       duration: 3000, 
       splash: Image.asset('assets/icon/splash.png'), 
-      nextScreen: const AuthenticationView(), 
+      nextScreen: const SearchView(), 
       splashTransition: SplashTransition.scaleTransition,
       backgroundColor: Colors.blue,
     );
