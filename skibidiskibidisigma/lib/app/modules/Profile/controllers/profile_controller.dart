@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileController extends GetxController {
-  var profileImage = Rx<File?>(null);
+  var profileImage = Rx<File?>(null); 
   final ImagePicker _picker = ImagePicker();
 
   Future<void> pickImage() async {

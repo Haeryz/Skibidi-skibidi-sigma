@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 
 import '../controllers/plan_controller.dart';
 
@@ -14,7 +15,7 @@ class PlanView extends GetView<PlanController> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-       title: Text(
+       title: const Text(
     'Rencanakan',
         style: TextStyle(
           fontWeight: FontWeight.bold, // Make the text bold
@@ -75,7 +76,7 @@ class PlanView extends GetView<PlanController> {
                       ),
                       if (controller.selectedTab.value == 0)
                         Container(
-                          margin: EdgeInsets.only(top: 4),
+                          margin: const EdgeInsets.only(top: 4),
                           height: 2,
                           width: 30,
                           color: Colors.black,
@@ -83,7 +84,7 @@ class PlanView extends GetView<PlanController> {
                     ],
                   )),
                 ),
-                SizedBox(width: 20),
+                const SizedBox(width: 20),
                 GestureDetector(
                   onTap: () => controller.selectTab(1),
                   child: Obx(() => Column(
@@ -100,7 +101,7 @@ class PlanView extends GetView<PlanController> {
                       ),
                       if (controller.selectedTab.value == 1)
                         Container(
-                          margin: EdgeInsets.only(top: 4),
+                          margin: const EdgeInsets.only(top: 4),
                           height: 2,
                           width: 30,
                           color: Colors.black,
@@ -116,27 +117,27 @@ class PlanView extends GetView<PlanController> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
+                  const Icon(
                     Icons.favorite_border,
                     size: 48,
                     color: Colors.orange,
                   ),
-                  SizedBox(height: 10),
-                  Text('Simpan Tempat yang ingin dikunjungi'),
-                  SizedBox(height: 20),
+                  const SizedBox(height: 10),
+                  const Text('Simpan Tempat yang ingin dikunjungi'),
+                  const SizedBox(height: 20),
                   ElevatedButton.icon(
                     onPressed: () {
                       Get.bottomSheet(
                         BuatTripForm(), // Show the bottom sheet with the form
                         backgroundColor: Colors.white,
-                        shape: RoundedRectangleBorder(
+                        shape: const RoundedRectangleBorder(
                           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                         ),
                         isScrollControlled: true,
                       );
                     },
-                    icon: Icon(Icons.add, color: Colors.white),
-                    label: Text(
+                    icon: const Icon(Icons.add, color: Colors.white),
+                    label: const Text(
                       'Buat Trip',
                       style: TextStyle(
                         color: Colors.white,
@@ -144,7 +145,7 @@ class PlanView extends GetView<PlanController> {
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.black,
-                      padding: EdgeInsets.symmetric(horizontal: 32, vertical: 12),
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 12),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                       ),
@@ -163,15 +164,17 @@ class PlanView extends GetView<PlanController> {
 class BuatTripForm extends StatelessWidget {
   final TextEditingController tripNameController = TextEditingController();
 
+  BuatTripForm({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           Center(
             child: Container(
               width: 50,
@@ -182,8 +185,8 @@ class BuatTripForm extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 20),
-          Center(
+          const SizedBox(height: 20),
+          const Center(
             child: Text(
               'Buat Trip',
               style: TextStyle(
@@ -192,17 +195,17 @@ class BuatTripForm extends StatelessWidget {
               ),
             ),
           ),
-          SizedBox(height: 20),
-          Text('Nama Trip'),
-          SizedBox(height: 10),
+          const SizedBox(height: 20),
+          const Text('Nama Trip'),
+          const SizedBox(height: 10),
           TextField(
             controller: tripNameController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               border: OutlineInputBorder(),
               hintText: 'Masukkan nama trip',
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Center(
             child: ElevatedButton(
               onPressed: () {
@@ -216,20 +219,31 @@ class BuatTripForm extends StatelessWidget {
                       snackPosition: SnackPosition.BOTTOM);
                 }
               },
-              child: Text(
-                'Buat Trip',
-                style: TextStyle(color: Colors.white), // Ensures the text is white
-              ),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.black, // Button background color
-                padding: EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
               ),
+              child: Text(
+                'Buat Trip',
+                style: TextStyle(color: Colors.white), // Ensures the text is white
+              ),
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
+
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: (){
+                Get.toNamed(Routes.AUTHENTICATION);
+              }, child: const Text(
+                'test'
+              )
+              ),
+          )
         ],
       ),
     );

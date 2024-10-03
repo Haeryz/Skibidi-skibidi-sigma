@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:skibidiskibidisigma/app/modules/Plan/bindings/plan_binding.dart';
+import 'package:skibidiskibidisigma/app/modules/Plan/views/plan_view.dart';
 import 'package:skibidiskibidisigma/app/modules/Profile/bindings/profile_binding.dart';
 import 'package:skibidiskibidisigma/app/modules/Profile/views/profile_view.dart';
 import 'package:skibidiskibidisigma/app/modules/authentication/bindings/authentication_binding.dart';
@@ -34,6 +36,11 @@ class AppPages {
       name: _Paths.PROFILE,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
+    ),
+    GetPage(
+      name: _Paths.PLAN,
+      page: () => const PlanView(),
+      binding: PlanBinding(),
     ),
   ];
 }
