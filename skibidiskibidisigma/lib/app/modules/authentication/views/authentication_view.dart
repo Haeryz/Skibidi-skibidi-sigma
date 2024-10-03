@@ -121,6 +121,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
 
             SizedBox(
               width: double.infinity,
+              height: double.infinity,
               child: SignInButton(Buttons.google,
                   text: 'Sign in menggunakan Google',
                   shape: RoundedRectangleBorder(

@@ -5,7 +5,7 @@ import 'package:skibidiskibidisigma/app/modules/authentication/views/authenticat
 import '../../home/views/home_view.dart'; 
 
 class SplashScreenView extends StatelessWidget {
-  const SplashScreenView({Key? key}) : super(key: key);
+  const SplashScreenView({super.key});
 
   @override
   Widget build(BuildContext context) {

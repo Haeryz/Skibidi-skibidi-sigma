@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileController extends GetxController {
-  var profileImage = Rx<File?>(null);
+  var profileImage = Rx<File?>(null); //mutable variable because pfp can be updated by the user
   final ImagePicker _picker = ImagePicker();
 
-  Future<void> pickImage() async {
+  Future<void> pickImage() async { //Take image from user camera or galery, future is referrs to and object that represent value not available yet, that's why there is placeholder in view
     // Show a modal bottom sheet to select between camera and gallery
     final source = await Get.bottomSheet<ImageSource>(
       Container(
@@ -29,6 +29,7 @@ class ProfileController extends GetxController {
               },
             ),
           ],
+          
         ),
       ),
     );
