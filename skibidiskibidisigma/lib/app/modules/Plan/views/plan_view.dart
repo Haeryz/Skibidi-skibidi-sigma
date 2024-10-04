@@ -19,12 +19,11 @@ class PlanView extends GetView<PlanController> {
         title: const Text(
           'Rencanakan',
           style: TextStyle(
-            fontWeight: FontWeight.bold, // Make the text bold
-            color: Colors.black, // Optional: Change the text color if needed
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
         ),
-        backgroundColor:
-            const Color.fromARGB(255, 255, 255, 255), // White background
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -115,51 +114,73 @@ class PlanView extends GetView<PlanController> {
             ),
           ),
           Expanded(
-            child: Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Icon(
-                    Icons.favorite_border,
-                    size: 48,
-                    color: Colors.orange,
-                  ),
-                  const SizedBox(height: 10),
-                  const Text('Simpan Tempat yang ingin dikunjungi'),
-                  const SizedBox(height: 20),
-                  ElevatedButton.icon(
-                    onPressed: () {
-                      Get.bottomSheet(
-                        BuatTripForm(), // Show the bottom sheet with the form
-                        backgroundColor: Colors.white,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius:
-                              BorderRadius.vertical(top: Radius.circular(20)),
-                        ),
-                        isScrollControlled: true,
-                      );
-                    },
-                    icon: const Icon(Icons.add, color: Colors.white),
-                    label: const Text(
-                      'Buat Trip',
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.black,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 12),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+            child: Obx(() {
+              if (controller.trips.isEmpty) {
+                return const Center(
+                  child: Text('Belum ada trip yang dibuat'),
+                );
+              }
+
+              return ListView.builder(
+                itemCount: controller.trips.length,
+                itemBuilder: (context, index) {
+                  final trip = controller.trips[index];
+                  return ListTile(
+  title: Text(trip.name),
+  subtitle: Text(
+    '${trip.startLocation} → ${trip.destination}\n'
+    'Berangkat: ${DateFormat('dd/MM/yyyy').format(trip.departureDate)}\n'
+    'Pulang: ${DateFormat('dd/MM/yyyy').format(trip.returnDate)}\n'
+    'Kendaraan: ${trip.vehicle}',
+  ),
+  isThreeLine: true,
+  leading: const Icon(Icons.directions),
+  trailing: Row(
+    mainAxisSize: MainAxisSize.min,
+    children: [
+      IconButton(
+        icon: Icon(Icons.edit),
+        onPressed: () {
+          controller.editTrip(index);
+          Get.bottomSheet(
+            BuatTripForm(),
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
+            isScrollControlled: true,
+          );
+        },
+      ),
+      IconButton(
+        icon: Icon(Icons.delete),
+        onPressed: () {
+          controller.deleteTrip(index);
+        },
+      ),
+    ],
+  ),
+);
+
+                },
+              );
+            }),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.bottomSheet(
+            BuatTripForm(), // Show the bottom sheet with the form
+            backgroundColor: Colors.white,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+            ),
+            isScrollControlled: true,
+          );
+        },
+        backgroundColor: Colors.black,
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }
@@ -169,7 +190,14 @@ class BuatTripForm extends StatelessWidget {
   final TextEditingController tripNameController = TextEditingController();
   final PlanController planController = Get.put(PlanController());
 
-  BuatTripForm({super.key});
+  BuatTripForm({super.key}) {
+    if (planController.isEditing.value && planController.editingTripIndex.value >= 0) {
+      final trip = planController.trips[planController.editingTripIndex.value];
+      tripNameController.text = trip.name;
+    } else {
+      tripNameController.clear();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -177,7 +205,6 @@ class BuatTripForm extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: SingleChildScrollView(
-          // Wrap with SingleChildScrollView for scrolling
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,105 +240,56 @@ class BuatTripForm extends StatelessWidget {
                   hintText: 'Masukkan nama trip',
                 ),
               ),
+              const SizedBox(height: 20),
+              const Text('Pilih Kendaraan'),
               const SizedBox(height: 10),
-              const Text('Start location'),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Pilih lokasi asal anda',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(3),
+              Obx(
+                () => DropdownButton<String>(
+                  isExpanded: true,
+                  value: planController.selectedVehicle.value.isNotEmpty
+                      ? planController.selectedVehicle.value
+                      : null,
+                  hint: const Text('Pilih Kendaraan'),
+                  items: planController.vehicle.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    planController.setSelectedVehicle(newValue!);
+                  },
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text('Tanggal Berangkat'),
+              const SizedBox(height: 10),
+              Obx(
+                () => GestureDetector(
+                  onTap: () => planController.selectDate(context, planController.selectedDepartureDate),
+                  child: AbsorbPointer(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        hintText: DateFormat('dd/MM/yyyy').format(planController.selectedDepartureDate.value),
+                      ),
+                    ),
                   ),
                 ),
               ),
+              const SizedBox(height: 20),
+              const Text('Tanggal Pulang'),
               const SizedBox(height: 10),
-              const Text('Destination'),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Pilih lokasi tujuan anda',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(3),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 10),
-              const Text('Tanggal keberangkatan'),
-              Obx(() => TextFormField(
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      hintText:
-                          planController.selectedDepartureDate.value == null
-                              ? 'Belum memilih tanggal'
-                              : DateFormat('dd/MM/yyyy').format(
-                                  planController.selectedDepartureDate.value),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      prefixIcon: IconButton(
-                        onPressed: () {
-                          planController.selectDate(
-                              context,
-                              planController
-                                  .selectedDepartureDate); // Use the controller's method
-                        },
-                        icon: const Icon(Icons.calendar_today_rounded),
+              Obx(
+                () => GestureDetector(
+                  onTap: () => planController.selectDate(context, planController.selectedReturnDate),
+                  child: AbsorbPointer(
+                    child: TextField(
+                      decoration: InputDecoration(
+                        border: const OutlineInputBorder(),
+                        hintText: DateFormat('dd/MM/yyyy').format(planController.selectedReturnDate.value),
                       ),
                     ),
-                  )),
-              const SizedBox(height: 10),
-              const Text('Tanggal pulang'),
-              Obx(() => TextFormField(
-                    readOnly: true,
-                    decoration: InputDecoration(
-                      hintText: planController.selectedReturnDate.value == null
-                          ? 'Belum memilih tanggal'
-                          : DateFormat('dd/MM/yyyy')
-                              .format(planController.selectedReturnDate.value),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      prefixIcon: IconButton(
-                        onPressed: () {
-                          planController.selectDate(
-                              context,
-                              planController
-                                  .selectedReturnDate); // Use the controller's method
-                        },
-                        icon: const Icon(Icons.calendar_today_rounded),
-                      ),
-                    ),
-                  )),
-              const SizedBox(height: 10),
-              const Text('Pilih Jenis Kendaraan'),
-              Obx(() => DropdownButtonFormField<String>(
-                    value: planController.selectedVehicle.value.isEmpty
-                        ? null
-                        : planController.selectedVehicle.value,
-                    decoration: InputDecoration(
-                      contentPadding: const EdgeInsets.symmetric(
-                          vertical: 15, horizontal: 10),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(3),
-                      ),
-                      hintText: 'Pilih kendaraan',
-                    ),
-                    hint: const Text('Pilih kendaraan'),
-                    items: planController.vehicle.map((String vehicle) {
-                      return DropdownMenuItem<String>(
-                        value: vehicle,
-                        child: Text(vehicle),
-                      );
-                    }).toList(),
-                    onChanged: (newValue) {
-                      planController.setSelectedVehicle(newValue!);
-                    },
-                  )),
-              const SizedBox(height: 10),
-              const Text('Notes'),
-              TextField(
-                decoration: InputDecoration(
-                  hintText: 'Buat catatan',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(3),
                   ),
                 ),
               ),
@@ -321,27 +299,34 @@ class BuatTripForm extends StatelessWidget {
                   onPressed: () {
                     String tripName = tripNameController.text;
                     if (tripName.isNotEmpty) {
-                      // Do something with the trip name, e.g., create the trip
-                      Get.back(); // Close the bottom sheet
+                      final trip = Trip(
+                        name: tripName,
+                        startLocation: 'Location A', // Replace with your form field value
+                        destination: 'Location B',   // Replace with your form field value
+                        departureDate: planController.selectedDepartureDate.value,
+                        returnDate: planController.selectedReturnDate.value,
+                        vehicle: planController.selectedVehicle.value,
+                      );
+
+                      planController.addTrip(trip);
+                      planController.resetForm();  // Reset form after saving
+                      Get.back();
                     } else {
-                      // Show a snackbar or error if the name is empty
                       Get.snackbar('Error', 'Nama trip tidak boleh kosong',
                           snackPosition: SnackPosition.BOTTOM);
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black, // Button background color
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
+                    backgroundColor: Colors.black,
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
-                  child: const Text(
-                    'Buat Trip',
-                    style: TextStyle(
-                        color: Colors.white), // Ensures the text is white
-                  ),
+                  child: Obx(() => Text(
+                    planController.isEditing.value ? 'Update Trip' : 'Buat Trip',
+                    style: const TextStyle(color: Colors.white),
+                  )),
                 ),
               ),
               const SizedBox(height: 20),
@@ -352,3 +337,4 @@ class BuatTripForm extends StatelessWidget {
     );
   }
 }
+
