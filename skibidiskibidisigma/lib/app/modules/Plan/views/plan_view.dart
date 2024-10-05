@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:skibidiskibidisigma/app/modules/Profile/controllers/profile_controller.dart';
 import 'package:intl/intl.dart';
 
 import '../controllers/plan_controller.dart';
@@ -139,7 +138,7 @@ class PlanView extends GetView<PlanController> {
     mainAxisSize: MainAxisSize.min,
     children: [
       IconButton(
-        icon: Icon(Icons.edit),
+        icon: const Icon(Icons.edit),
         onPressed: () {
           controller.editTrip(index);
           Get.bottomSheet(
@@ -153,7 +152,7 @@ class PlanView extends GetView<PlanController> {
         },
       ),
       IconButton(
-        icon: Icon(Icons.delete),
+        icon: const Icon(Icons.delete),
         onPressed: () {
           controller.deleteTrip(index);
         },

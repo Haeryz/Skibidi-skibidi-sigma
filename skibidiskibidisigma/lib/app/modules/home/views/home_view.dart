@@ -2,21 +2,25 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 import '../controllers/home_controller.dart';
+import 'package:skibidiskibidisigma/app/modules/Profile/controllers/profile_controller.dart';
 
 class HomeView extends GetView<HomeController> {
-  const HomeView({super.key});
+  const HomeView({super.key}); // Remove const
 
   @override
   Widget build(BuildContext context) {
+    // Initialize profile controller
+    final ProfileController profileController = Get.put(ProfileController());
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color.fromRGBO(255, 193, 167, 1),
         elevation: 0,
         automaticallyImplyLeading: false,
-        title: const Row(
+        title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
+            const Text(
               'Telusuri',
               style: TextStyle(
                 color: Colors.black,
@@ -24,9 +28,16 @@ class HomeView extends GetView<HomeController> {
                 fontSize: 24,
               ),
             ),
-            CircleAvatar(
-              backgroundImage: AssetImage(
-                  'assets/icon/sigma.png'), // Ganti dengan path gambar profil
+            GestureDetector(
+              onTap: () {
+                Get.toNamed(Routes.PROFILE); // Navigate to profile page
+              },
+              child: Obx(() => CircleAvatar(
+                    radius: 20,
+                    backgroundImage: profileController.profileImage.value != null
+                        ? FileImage(profileController.profileImage.value!)
+                        : const AssetImage('assets/icon/sigma.png'),
+                  )),
             ),
           ],
         ),
@@ -106,13 +117,11 @@ class HomeView extends GetView<HomeController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       _recommendationCard(
-                        imagePath:
-                            'assets/icon/bromo.png', // Ganti dengan path gambar
+                        imagePath: 'assets/icon/bromo.png',
                         title: '1 Day - Tour Bromo Sunrise',
                       ),
                       _recommendationCard(
-                        imagePath:
-                            'assets/icon/pantai.png', // Ganti dengan path gambar
+                        imagePath: 'assets/icon/pantai.png',
                         title: '1 Day - Pantai Balekambang',
                       ),
                     ],
@@ -129,9 +138,9 @@ class HomeView extends GetView<HomeController> {
         onTap: (index) {
           if (index == 0) {
             Get.toNamed(Routes.HOME);
-          } else if (index == 1){
+          } else if (index == 1) {
             Get.toNamed(Routes.SEARCH);
-          } else if (index == 2){
+          } else if (index == 2) {
             Get.toNamed(Routes.PLAN);
           } else {
             print('Feature not available yet');
@@ -149,7 +158,6 @@ class HomeView extends GetView<HomeController> {
           BottomNavigationBarItem(
             icon: Icon(Icons.map),
             label: 'Rencana',
-            
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.rate_review),
@@ -164,10 +172,7 @@ class HomeView extends GetView<HomeController> {
     );
   }
 
-  
-
-  Widget _recommendationCard(
-      {required String imagePath, required String title}) {
+  Widget _recommendationCard({required String imagePath, required String title}) {
     return SizedBox(
       width: 150,
       child: Column(
