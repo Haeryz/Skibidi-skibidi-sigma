@@ -48,6 +48,9 @@ dependencies:
   geocoding: ^3.0.0
   flutter_typeahead: ^5.2.0
   flutter_dotenv: ^5.1.0
+  http: ^1.2.2
+  latlong2: ^0.9.1
+  flutter_map: ^7.0.2
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-
+import 'package:skibidiskibidisigma/app/modules/Plan/views/map_views.dart';
 import '../controllers/plan_controller.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
+import 'package:http/http.dart';
+import 'dart:convert';
 
 class PlanView extends GetView<PlanController> {
   const PlanView({super.key});
@@ -188,12 +192,15 @@ class PlanView extends GetView<PlanController> {
 class BuatTripForm extends StatelessWidget {
   final TextEditingController tripNameController = TextEditingController();
   final PlanController planController = Get.put(PlanController());
+  final String? locationIQKey = dotenv.env['LOCATIONIQ_API_KEY'];
 
   BuatTripForm({super.key}) {
     if (planController.isEditing.value &&
         planController.editingTripIndex.value >= 0) {
       final trip = planController.trips[planController.editingTripIndex.value];
       tripNameController.text = trip.name;
+      planController.setStartLocation(trip.startLocation);
+      planController.setDestination(trip.destination);
     } else {
       tripNameController.clear();
     }
@@ -246,48 +253,63 @@ class BuatTripForm extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: () {
-                      print("User menekan");
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 50, vertical: 5),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(3))),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.add_location_alt,
-                          color: Colors.black,
-                        ),
-                        Text("test"),
-                      ],
-                    )),
+                  onPressed: () {
+                    // Navigate to LocationIQ Map and handle selection
+                    Get.to(() => MapSelectionView(
+                      onLocationSelected: (location) {
+                        planController.setStartLocation(location);
+                      },
+                    ));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.add_location_alt,
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                ),
               ),
+              const SizedBox(height: 20),
+              const Text('Lokasi tujuan'),
+              const SizedBox(height: 10),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                    onPressed: () {
-                      print("User menekan");
-                    },
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 50, vertical: 5),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(3))),
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Icon(
-                          Icons.add_location_alt,
-                          color: Colors.black,
-                        ),
-                        Text("tujuan"),
-                      ],
-                    )),
+                  onPressed: () {
+                    // Navigate to LocationIQ Map and handle selection
+                    Get.to(() => MapSelectionView(
+                      onLocationSelected: (location) {
+                        planController.setDestination(location);
+                      },
+                    ));
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(3),
+                    ),
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Icon(
+                        Icons.add_location_alt,
+                        color: Colors.black,
+                      ),
+                    ],
+                  ),
+                ),
               ),
               const SizedBox(height: 20),
               const Text('Pilih Kendaraan'),
@@ -354,12 +376,9 @@ class BuatTripForm extends StatelessWidget {
                     if (tripName.isNotEmpty) {
                       final trip = Trip(
                         name: tripName,
-                        startLocation:
-                            'Location A', // Replace with your form field value
-                        destination:
-                            'Location B', // Replace with your form field value
-                        departureDate:
-                            planController.selectedDepartureDate.value,
+                        startLocation: planController.startLocation.value,
+                        destination: planController.destination.value,
+                        departureDate: planController.selectedDepartureDate.value,
                         returnDate: planController.selectedReturnDate.value,
                         vehicle: planController.selectedVehicle.value,
                       );
@@ -374,8 +393,7 @@ class BuatTripForm extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 15),
+                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),
