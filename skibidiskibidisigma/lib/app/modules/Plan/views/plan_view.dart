@@ -240,6 +240,36 @@ class BuatTripForm extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
+              const Text('Lokasi awal'),
+              const SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'skibidi',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15)
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.add_location_alt,
+                    color: Colors.black,
+                  )
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text('Lokasi tujuan'),
+              const SizedBox(height: 10),
+              TextField(
+                decoration: InputDecoration(
+                  hintText: 'Mewing',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(15)
+                  ),
+                  prefixIcon: const Icon(
+                    Icons.add_location_alt,
+                    color: Colors.black,
+                  )
+                ),
+              ),
+              const SizedBox(height: 20),
               const Text('Pilih Kendaraan'),
               const SizedBox(height: 10),
               Obx(

@@ -18,8 +18,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
       body: Padding(
         padding: const EdgeInsets.symmetric(
             horizontal: 20.0), // Equivalent to Tailwind's px-20
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: ListView(
           children: [
             const SizedBox(height: 20), // Equivalent to Tailwind's pt-20
             // Logo on top
