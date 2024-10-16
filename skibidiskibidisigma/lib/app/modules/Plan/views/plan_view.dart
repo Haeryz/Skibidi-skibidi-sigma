@@ -253,17 +253,26 @@ class BuatTripForm extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to LocationIQ Map and handle selection
-                    Get.to(() => MapSelectionView(
-                      onLocationSelected: (location) {
-                        planController.setStartLocation(location);
-                      },
-                    ));
+                  onPressed: () async {
+                    // Navigate to MapSelectionView and wait for the result
+                    final result = await Get.to<MapSelectionView>(
+                      () => MapSelectionView(
+                        onLocationSelected: (location, lat, lon) {
+                          // Navigate to MapView when a location is selected
+                          Get.to<MapView>(
+                            () => MapView(latitude: lat, longitude: lon),
+                          );
+                        },
+                      ),
+                    );
+
+                    // Optional: Do something with the result if needed
+                    // e.g., show a snackbar, update state, etc.
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3),
                     ),
@@ -275,6 +284,12 @@ class BuatTripForm extends StatelessWidget {
                         Icons.add_location_alt,
                         color: Colors.black,
                       ),
+                      SizedBox(
+                          width:
+                              8), // Add some spacing between the icon and the text
+                      Text('Select Location',
+                          style:
+                              TextStyle(color: Colors.black)), // Optional text
                     ],
                   ),
                 ),
@@ -285,17 +300,26 @@ class BuatTripForm extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    // Navigate to LocationIQ Map and handle selection
-                    Get.to(() => MapSelectionView(
-                      onLocationSelected: (location) {
-                        planController.setDestination(location);
-                      },
-                    ));
+                  onPressed: () async {
+                    // Navigate to MapSelectionView and wait for the result
+                    final result = await Get.to<MapSelectionView>(
+                      () => MapSelectionView(
+                        onLocationSelected: (location, lat, lon) {
+                          // Navigate to MapView when a location is selected
+                          Get.to<MapView>(
+                            () => MapView(latitude: lat, longitude: lon),
+                          );
+                        },
+                      ),
+                    );
+
+                    // Optional: Do something with the result if needed
+                    // e.g., show a snackbar, update state, etc.
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 50, vertical: 5),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(3),
                     ),
@@ -307,6 +331,12 @@ class BuatTripForm extends StatelessWidget {
                         Icons.add_location_alt,
                         color: Colors.black,
                       ),
+                      SizedBox(
+                          width:
+                              8), // Add some spacing between the icon and the text
+                      Text('Select Location',
+                          style:
+                              TextStyle(color: Colors.black)), // Optional text
                     ],
                   ),
                 ),
@@ -378,7 +408,8 @@ class BuatTripForm extends StatelessWidget {
                         name: tripName,
                         startLocation: planController.startLocation.value,
                         destination: planController.destination.value,
-                        departureDate: planController.selectedDepartureDate.value,
+                        departureDate:
+                            planController.selectedDepartureDate.value,
                         returnDate: planController.selectedReturnDate.value,
                         vehicle: planController.selectedVehicle.value,
                       );
@@ -393,7 +424,8 @@ class BuatTripForm extends StatelessWidget {
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.black,
-                    padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 15),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
                     ),

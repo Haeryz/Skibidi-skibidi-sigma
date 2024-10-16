@@ -3,18 +3,18 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:maplibre_gl/maplibre_gl.dart'; // Import Maplibre
 
 class MapSelectionView extends StatelessWidget {
-  final Function(String) onLocationSelected;
+  final Function(String, double, double) onLocationSelected;
   final TextEditingController _controller = TextEditingController();
-  final RxList<dynamic> suggestions = <dynamic>[].obs; // Observable list to hold suggestions
+  final RxList<dynamic> suggestions = <dynamic>[].obs;
 
   MapSelectionView({super.key, required this.onLocationSelected});
 
   Future<void> _fetchLocation(String query) async {
-    final String apiKey = dotenv.env['LOCATIONIQ_API_KEY'] ?? ''; // Load the API key from .env
+    final String apiKey = dotenv.env['LOCATIONIQ_API_KEY'] ?? '';
 
-    // Create the Uri with query parameters
     final Uri url = Uri.parse("https://api.locationiq.com/v1/autocomplete")
         .replace(queryParameters: {
       'key': apiKey,
@@ -24,36 +24,30 @@ class MapSelectionView extends StatelessWidget {
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      // Decode the response
       List<dynamic> data = json.decode(response.body);
 
-      // Print the JSON output to the console
-      print("Response JSON: ${json.encode(data)}"); // Print the entire JSON response
+      print("Response JSON: ${json.encode(data)}");
 
-      // Update suggestions list
-      suggestions.value = data; // Update the observable list with new data
+      suggestions.value = data;
 
-      // Handle the response (you can show a list of suggestions or something else)
       if (data.isNotEmpty) {
-        // Extract location details and pass it to the onLocationSelected callback
         String location = data[0]['display_name'];
-        onLocationSelected(location);
+        double lat = double.parse(data[0]['lat']);
+        double lon = double.parse(data[0]['lon']);
+        onLocationSelected(location, lat, lon);
       } else {
-        // Handle the case when no location is found
         Get.snackbar("No results", "No locations found for your query.");
       }
     } else {
-      // Handle error
       Get.snackbar("Error", "Failed to fetch locations. Status code: ${response.statusCode}");
     }
   }
 
   void _onQueryChanged(String query) {
-    // Only trigger the search if the query has 3 or more characters
     if (query.length >= 3) {
       _fetchLocation(query);
     } else {
-      suggestions.clear(); // Clear suggestions if less than 3 characters
+      suggestions.clear();
     }
   }
 
@@ -74,14 +68,13 @@ class MapSelectionView extends StatelessWidget {
                 suffixIcon: IconButton(
                   icon: const Icon(Icons.search),
                   onPressed: () {
-                    _onQueryChanged(_controller.text); // Call when the search button is pressed
+                    _onQueryChanged(_controller.text);
                   },
                 ),
               ),
-              onChanged: _onQueryChanged, // Trigger search as user types
+              onChanged: _onQueryChanged,
             ),
             SizedBox(height: 10),
-            // Display suggestions in a ListView
             Expanded(
               child: Obx(() => ListView.builder(
                     itemCount: suggestions.length,
@@ -90,10 +83,11 @@ class MapSelectionView extends StatelessWidget {
                       return ListTile(
                         title: Text(suggestion['display_name']),
                         onTap: () {
-                          // Call onLocationSelected when a suggestion is tapped
-                          onLocationSelected(suggestion['display_name']);
-                          _controller.clear(); // Clear the text field
-                          suggestions.clear(); // Clear suggestions after selection
+                          double lat = double.parse(suggestion['lat']);
+                          double lon = double.parse(suggestion['lon']);
+                          onLocationSelected(suggestion['display_name'], lat, lon);
+                          _controller.clear();
+                          suggestions.clear();
                         },
                       );
                     },
@@ -101,6 +95,37 @@ class MapSelectionView extends StatelessWidget {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class MapView extends StatelessWidget {
+  final double latitude;
+  final double longitude;
+
+  MapView({required this.latitude, required this.longitude});
+
+  @override
+  Widget build(BuildContext context) {
+    final String apiKey = dotenv.env['MAPTILER_API_KEY'] ?? '';
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Map View'),
+      ),
+      body: MaplibreMap(
+        styleString: "https://api.maptiler.com/maps/streets/style.json?key=$apiKey",
+        initialCameraPosition: CameraPosition(
+          target: LatLng(latitude, longitude),
+          zoom: 14.0,
+        ),
+        onMapCreated: (MaplibreMapController controller) {
+          controller.addSymbol(SymbolOptions(
+            geometry: LatLng(latitude, longitude),
+            iconImage: "marker-15",
+          ));
+        },
       ),
     );
   }
