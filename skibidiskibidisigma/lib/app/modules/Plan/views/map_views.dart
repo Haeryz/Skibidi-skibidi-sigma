@@ -31,10 +31,11 @@ class MapSelectionView extends StatelessWidget {
       suggestions.value = data;
 
       if (data.isNotEmpty) {
-        String location = data[0]['display_name'];
-        double lat = double.parse(data[0]['lat']);
-        double lon = double.parse(data[0]['lon']);
-        onLocationSelected(location, lat, lon);
+        // Optionally remove the automatic selection logic
+        // String location = data[0]['display_name'];
+        // double lat = double.parse(data[0]['lat']);
+        // double lon = double.parse(data[0]['lon']);
+        // onLocationSelected(location, lat, lon);
       } else {
         Get.snackbar("No results", "No locations found for your query.");
       }
@@ -44,10 +45,10 @@ class MapSelectionView extends StatelessWidget {
   }
 
   void _onQueryChanged(String query) {
-    if (query.length >= 3) {
-      _fetchLocation(query);
+    if (query.isEmpty) {
+      suggestions.clear(); // Clear suggestions if the query is empty
     } else {
-      suggestions.clear();
+      _fetchLocation(query); // Fetch suggestions regardless of query length
     }
   }
 
