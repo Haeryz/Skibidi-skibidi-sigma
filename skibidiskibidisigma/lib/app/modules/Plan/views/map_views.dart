@@ -10,6 +10,9 @@ class MapSelectionView extends StatelessWidget {
   final Function(String, double, double) onLocationSelected;
   final TextEditingController _controller = TextEditingController();
   final RxList<dynamic> suggestions = <dynamic>[].obs;
+  final RxString selectedLocationName = ''.obs;
+  final RxDouble selectedLatitude = 0.0.obs;
+  final RxDouble selectedLongitude = 0.0.obs;
 
   MapSelectionView({super.key, required this.onLocationSelected});
 
@@ -60,19 +63,16 @@ class MapSelectionView extends StatelessWidget {
     }
   }
 
-  // New method to get current GPS location
   Future<void> _getCurrentLocation() async {
     bool serviceEnabled;
     LocationPermission permission;
 
-    // Check if location services are enabled
     serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       Get.snackbar("Error", "Location services are disabled.");
       return;
     }
 
-    // Request location permission
     permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
@@ -87,17 +87,27 @@ class MapSelectionView extends StatelessWidget {
       return;
     }
 
-    // Get the current location
     Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
     _fetchAddressFromCoordinates(position.latitude, position.longitude);
+
+    selectedLatitude.value = position.latitude;
+    selectedLongitude.value = position.longitude;
+    selectedLocationName.value = 'Selected via GPS';
   }
 
   void _onQueryChanged(String query) {
     if (query.isEmpty) {
-      suggestions.clear(); // Clear suggestions if the query is empty
+      suggestions.clear();
     } else {
-      _fetchLocation(query); // Fetch suggestions regardless of query length
+      _fetchLocation(query);
     }
+  }
+
+  void _onLocationSelected(String displayName, double lat, double lon) {
+    selectedLocationName.value = displayName;
+    selectedLatitude.value = lat;
+    selectedLongitude.value = lon;
+    suggestions.clear();
   }
 
   @override
@@ -108,7 +118,7 @@ class MapSelectionView extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.my_location),
-            onPressed: _getCurrentLocation, // Fetch current location when button pressed
+            onPressed: _getCurrentLocation,
           ),
         ],
       ),
@@ -129,7 +139,7 @@ class MapSelectionView extends StatelessWidget {
               ),
               onChanged: _onQueryChanged,
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Expanded(
               child: Obx(() => ListView.builder(
                     itemCount: suggestions.length,
@@ -140,23 +150,38 @@ class MapSelectionView extends StatelessWidget {
                         onTap: () {
                           double lat = double.parse(suggestion['lat']);
                           double lon = double.parse(suggestion['lon']);
-                          onLocationSelected(suggestion['display_name'], lat, lon);
+                          _onLocationSelected(suggestion['display_name'], lat, lon);
                           _controller.clear();
-                          suggestions.clear();
-
-                          // Fetch address from coordinates after location selection
-                          _fetchAddressFromCoordinates(lat, lon);
                         },
                       );
                     },
                   )),
             ),
+            Obx(() => Text(
+              selectedLocationName.isNotEmpty ? 'Selected Location: ${selectedLocationName.value}' : 'No location selected.',
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            )),
+            const SizedBox(height: 20),
+            Obx(() => ElevatedButton(
+              onPressed: selectedLocationName.isNotEmpty
+                  ? () {
+                      onLocationSelected(
+                        selectedLocationName.value,
+                        selectedLatitude.value,
+                        selectedLongitude.value,
+                      );
+                      Get.back(); // Go back after confirming location
+                    }
+                  : null, // Disable button if no location is selected
+              child: const Text('Confirm Location'),
+            )),
           ],
         ),
       ),
     );
   }
 }
+
 
 class MapView extends StatelessWidget {
   final double latitude;
