@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:maplibre_gl/maplibre_gl.dart'; // Import Maplibre
+import 'package:geolocator/geolocator.dart';  // Import geolocator
 
 class MapSelectionView extends StatelessWidget {
   final Function(String, double, double) onLocationSelected;
@@ -26,22 +27,69 @@ class MapSelectionView extends StatelessWidget {
     if (response.statusCode == 200) {
       List<dynamic> data = json.decode(response.body);
 
-      print("Response JSON: ${json.encode(data)}");
-
       suggestions.value = data;
 
       if (data.isNotEmpty) {
         // Optionally remove the automatic selection logic
-        // String location = data[0]['display_name'];
-        // double lat = double.parse(data[0]['lat']);
-        // double lon = double.parse(data[0]['lon']);
-        // onLocationSelected(location, lat, lon);
       } else {
         Get.snackbar("No results", "No locations found for your query.");
       }
     } else {
       Get.snackbar("Error", "Failed to fetch locations. Status code: ${response.statusCode}");
     }
+  }
+
+  Future<void> _fetchAddressFromCoordinates(double lat, double lon) async {
+    final String apiKey = dotenv.env['LOCATIONIQ_API_KEY'] ?? '';
+
+    final Uri url = Uri.parse("https://us1.locationiq.com/v1/reverse").replace(queryParameters: {
+      'key': apiKey,
+      'lat': lat.toString(),
+      'lon': lon.toString(),
+      'format': 'json',
+    });
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      String displayName = data['display_name'] ?? 'Unknown location';
+      Get.snackbar('Reverse Geocode', 'Location: $displayName');
+    } else {
+      Get.snackbar("Error", "Failed to fetch address. Status code: ${response.statusCode}");
+    }
+  }
+
+  // New method to get current GPS location
+  Future<void> _getCurrentLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Check if location services are enabled
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      Get.snackbar("Error", "Location services are disabled.");
+      return;
+    }
+
+    // Request location permission
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        Get.snackbar("Error", "Location permissions are denied");
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      Get.snackbar("Error", "Location permissions are permanently denied, we cannot request permissions.");
+      return;
+    }
+
+    // Get the current location
+    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+    _fetchAddressFromCoordinates(position.latitude, position.longitude);
   }
 
   void _onQueryChanged(String query) {
@@ -57,6 +105,12 @@ class MapSelectionView extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Select Location'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.my_location),
+            onPressed: _getCurrentLocation, // Fetch current location when button pressed
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -89,6 +143,9 @@ class MapSelectionView extends StatelessWidget {
                           onLocationSelected(suggestion['display_name'], lat, lon);
                           _controller.clear();
                           suggestions.clear();
+
+                          // Fetch address from coordinates after location selection
+                          _fetchAddressFromCoordinates(lat, lon);
                         },
                       );
                     },
