@@ -4,7 +4,9 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:maplibre_gl/maplibre_gl.dart'; // Import Maplibre
-import 'package:geolocator/geolocator.dart';  // Import geolocator
+import 'package:geolocator/geolocator.dart';
+import 'package:skibidiskibidisigma/app/modules/Plan/views/plan_view.dart';
+import 'package:skibidiskibidisigma/app/routes/app_pages.dart';  // Import geolocator
 
 class MapSelectionView extends StatelessWidget {
   final Function(String, double, double) onLocationSelected;
@@ -170,7 +172,9 @@ class MapSelectionView extends StatelessWidget {
                         selectedLatitude.value,
                         selectedLongitude.value,
                       );
-                      Get.back(); // Go back after confirming location
+                      Get.to<BuatTripForm>(
+                            () => BuatTripForm(),
+                      ); // Go back after confirming location
                     }
                   : null, // Disable button if no location is selected
               child: const Text('Confirm Location'),
@@ -181,7 +185,6 @@ class MapSelectionView extends StatelessWidget {
     );
   }
 }
-
 
 class MapView extends StatelessWidget {
   final double latitude;
