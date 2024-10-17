@@ -9,7 +9,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();  
   await Firebase.initializeApp();  
   Get.lazyPut<local.SearchController>(() => local.SearchController());
-  await dotenv.load();
 
   runApp(
     GetMaterialApp(
