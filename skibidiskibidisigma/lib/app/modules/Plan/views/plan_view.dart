@@ -193,12 +193,19 @@ class BuatTripForm extends StatelessWidget {
   final TextEditingController tripNameController = TextEditingController();
   final PlanController planController = Get.put(PlanController());
   final String? locationIQKey = dotenv.env['LOCATIONIQ_API_KEY'];
+  final RxString startLocation = ''.obs;
+  final RxDouble startLatitude = 0.0.obs;
+  final RxDouble startLongitude = 0.0.obs;
+  final RxString destinationLocation = ''.obs;
+  final RxDouble destinationLatitude = 0.0.obs;
+  final RxDouble destinationLongitude = 0.0.obs;
 
-  BuatTripForm({super.key}) {
+   BuatTripForm({super.key}) {
     if (planController.isEditing.value &&
         planController.editingTripIndex.value >= 0) {
       final trip = planController.trips[planController.editingTripIndex.value];
       tripNameController.text = trip.name;
+      startLocation.value = trip.startLocation; // Initialize with trip data
       planController.setStartLocation(trip.startLocation);
       planController.setDestination(trip.destination);
     } else {
@@ -258,6 +265,9 @@ class BuatTripForm extends StatelessWidget {
                     final result = await Get.to<MapSelectionView>(
                       () => MapSelectionView(
                         onLocationSelected: (location, lat, lon) {
+                          startLocation.value = location;
+                          startLatitude.value = lat;
+                          startLongitude.value = lon;
                           // Navigate to MapView when a location is selected
                           Get.to<MapView>(
                             () => MapView(latitude: lat, longitude: lon),
@@ -294,6 +304,45 @@ class BuatTripForm extends StatelessWidget {
                   ),
                 ),
               ),
+              
+              const SizedBox(height: 20),
+              const Text('Skibidi'),
+              const SizedBox(height: 10),
+              // lokasi1
+              Obx(() => startLocation.isNotEmpty
+                  ? Text(
+                      'Selected Location: ${startLocation.value} \nLat: ${startLatitude.value}, Lon: ${startLongitude.value}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : const Text('No location selected.')),
+              const SizedBox(height: 20),
+              const Text('Skibidi'),
+              const SizedBox(height: 10),
+              // lokasi2
+              Obx(() => startLocation.isNotEmpty
+                  ? Text(
+                      'Selected Location: ${startLocation.value} \nLat: ${startLatitude.value}, Lon: ${startLongitude.value}',
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    )
+                  : const Text('No location selected.')),
+              const SizedBox(height: 20),
+              const Text('Skibidi'),
+              const SizedBox(height: 10),
+              SizedBox(
+                child: TextField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    hintText: 'skibidi',
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 20),
               const Text('Lokasi tujuan'),
               const SizedBox(height: 10),

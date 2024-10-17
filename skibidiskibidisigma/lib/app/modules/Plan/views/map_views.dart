@@ -159,7 +159,7 @@ class MapSelectionView extends StatelessWidget {
             ),
             Obx(() => Text(
               selectedLocationName.isNotEmpty ? 'Selected Location: ${selectedLocationName.value}' : 'No location selected.',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             )),
             const SizedBox(height: 20),
             Obx(() => ElevatedButton(

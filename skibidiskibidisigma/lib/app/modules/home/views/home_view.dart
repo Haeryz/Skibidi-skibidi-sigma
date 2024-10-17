@@ -66,7 +66,9 @@ class HomeView extends GetView<HomeController> {
                       children: [
                         GestureDetector(
                           onTap: () {
+
                             Get.toNamed(Routes.WIKIPEDIA); //ganti PLAN ke page yang di inginkan
+
                           },
                           child: SizedBox(
                             width: 150,
@@ -128,7 +130,11 @@ class HomeView extends GetView<HomeController> {
                         ),
                         GestureDetector(
                           onTap: () {
+
                             Get.toNamed(Routes.WIKIPEDIA); //ganti PLAN ke page yang di inginkan
+
+                            Get.toNamed(Routes.PLAN); //ganti PLAN ke page yang di inginkan
+
                           },
                           child: SizedBox(
                             width: 150,
