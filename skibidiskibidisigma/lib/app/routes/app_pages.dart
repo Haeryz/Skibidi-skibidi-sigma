@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:skibidiskibidisigma/app/modules/akun/bindings/akun_binding.dart';
+import 'package:skibidiskibidisigma/app/modules/akun/views/akun_view.dart';
 import 'package:skibidiskibidisigma/app/modules/search/bindings/search_binding.dart';
 import 'package:skibidiskibidisigma/app/modules/Plan/bindings/plan_binding.dart';
 import 'package:skibidiskibidisigma/app/modules/Plan/views/plan_view.dart';
@@ -55,6 +57,11 @@ class AppPages {
       name: _Paths.WIKIPEDIA,
       page: () => const WikipediaView(),
       binding: wikipediaBinding(),
+    ),
+    GetPage(
+      name: _Paths.AKUN,
+      page: () => const akunView(),
+      binding: akunBinding(),
     ),
   ];
 }

@@ -9,6 +9,7 @@ abstract class Routes {
   static const PROFILE = _Paths.PROFILE;
   static const PLAN = _Paths.PLAN;
   static const WIKIPEDIA = _Paths.WIKIPEDIA;
+  static const AKUN = _Paths.AKUN;
 }
 
 abstract class _Paths {
@@ -20,4 +21,5 @@ abstract class _Paths {
   static const PROFILE = '/profile';
   static const PLAN = '/plan';
   static const WIKIPEDIA = '/wikipedia';
+  static const AKUN = '/akun';
 }
