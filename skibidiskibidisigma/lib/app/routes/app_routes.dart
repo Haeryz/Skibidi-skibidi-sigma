@@ -8,6 +8,7 @@ abstract class Routes {
   static const AUTHENTICATION = _Paths.AUTHENTICATION;
   static const PROFILE = _Paths.PROFILE;
   static const PLAN = _Paths.PLAN;
+  static const WIKIPEDIA = _Paths.WIKIPEDIA;
 }
 
 abstract class _Paths {
@@ -18,4 +19,5 @@ abstract class _Paths {
   static const AUTHENTICATION = '/authentication';
   static const PROFILE = '/profile';
   static const PLAN = '/plan';
+  static const WIKIPEDIA = '/wikipedia';
 }
