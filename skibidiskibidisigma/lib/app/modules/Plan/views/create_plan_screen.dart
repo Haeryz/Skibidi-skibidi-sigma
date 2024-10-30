@@ -10,6 +10,9 @@ class CreatePlanScreen extends StatelessWidget {
   final String name;
   final String description;
   final String date;
+  final String startLocation;
+  final String destination;
+  final String arrivalDate;
 
   CreatePlanScreen({
     required this.isEdit,
@@ -17,6 +20,9 @@ class CreatePlanScreen extends StatelessWidget {
     this.name = '',
     this.description = '',
     this.date = '',
+    this.startLocation = '',
+    this.destination = '',
+    this.arrivalDate = '',
   });
 
   final PlanController controller = Get.put(PlanController());
@@ -28,30 +34,39 @@ class CreatePlanScreen extends StatelessWidget {
       name: name,
       description: description,
       date: date,
+      startLocation: startLocation,
+      destination: destination,
+      arrivalDate: arrivalDate,
     );
 
     return Scaffold(
       backgroundColor: AppColor().colorPrimary,
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: Stack(
           children: <Widget>[
             WidgetBackground(),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                _buildWidgetFormPrimary(),
-                const SizedBox(height: 16.0),
-                _buildWidgetFormSecondary(context),
-                Obx(() => controller.isLoading.value
-                    ? Center(
-                        child: CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                              AppColor().colorTertiary),
-                        ),
-                      )
-                    : _buildWidgetButtonCreateTask()),
-              ],
+            SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    _buildWidgetFormPrimary(),
+                    const SizedBox(height: 16.0),
+                    _buildWidgetFormSecondary(context),
+                    const SizedBox(height: 16.0),
+                    Obx(() => controller.isLoading.value
+                        ? Center(
+                            child: CircularProgressIndicator(
+                              valueColor: AlwaysStoppedAnimation<Color>(
+                                  AppColor().colorTertiary),
+                            ),
+                          )
+                        : _buildWidgetButtonCreateTask()),
+                  ],
+                ),
+              ),
             ),
           ],
         ),
@@ -78,7 +93,17 @@ class CreatePlanScreen extends StatelessWidget {
           TextField(
             controller: controller.controllerName,
             decoration: InputDecoration(labelText: 'Name'),
-            style: const TextStyle(fontSize: 18.0),
+            style: TextStyle(fontSize: 18.0),
+          ),
+          TextField(
+            controller: controller.controllerStartLocation,
+            decoration: InputDecoration(labelText: 'Start Location'),
+            style: TextStyle(fontSize: 18.0),
+          ),
+          TextField(
+            controller: controller.controllerDestination,
+            decoration: InputDecoration(labelText: 'Destination'),
+            style: TextStyle(fontSize: 18.0),
           ),
         ],
       ),
@@ -86,39 +111,48 @@ class CreatePlanScreen extends StatelessWidget {
   }
 
   Widget _buildWidgetFormSecondary(BuildContext context) {
-    return Expanded(
-      child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(24.0),
-            topRight: Radius.circular(24.0),
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(24.0),
+          topRight: Radius.circular(24.0),
+        ),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+      child: Column(
+        children: <Widget>[
+          TextField(
+            controller: controller.controllerDescription,
+            decoration: const InputDecoration(
+              labelText: 'Description',
+              suffixIcon: Icon(Icons.description),
+            ),
+            style: TextStyle(fontSize: 18.0),
           ),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              controller: controller.controllerDescription,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                suffixIcon: Icon(Icons.description),
-              ),
-              style: const TextStyle(fontSize: 18.0),
+          const SizedBox(height: 16.0),
+          TextField(
+            controller: controller.controllerDate,
+            decoration: const InputDecoration(
+              labelText: 'Date',
+              suffixIcon: Icon(Icons.today),
             ),
-            const SizedBox(height: 16.0),
-            TextField(
-              controller: controller.controllerDate,
-              decoration: const InputDecoration(
-                labelText: 'Date',
-                suffixIcon: Icon(Icons.today),
-              ),
-              style: const TextStyle(fontSize: 18.0),
-              readOnly: true,
-              onTap: () => controller.selectDate(context),
+            style: TextStyle(fontSize: 18.0),
+            readOnly: true,
+            onTap: () => controller.selectDate(context),
+          ),
+          const SizedBox(height: 16.0),
+          TextField(
+            controller: controller.controllerArrivalDate,
+            decoration: const InputDecoration(
+              labelText: 'Arrival Date',
+              suffixIcon: Icon(Icons.event),
             ),
-          ],
-        ),
+            style: TextStyle(fontSize: 18.0),
+            readOnly: true,
+            onTap: () => controller.selectArrivalDate(context),
+          ),
+        ],
       ),
     );
   }
@@ -126,7 +160,6 @@ class CreatePlanScreen extends StatelessWidget {
   Widget _buildWidgetButtonCreateTask() {
     return Container(
       width: double.infinity,
-      color: Colors.white,
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
