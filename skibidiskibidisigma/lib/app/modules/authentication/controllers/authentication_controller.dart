@@ -5,7 +5,6 @@ import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 class AuthenticationController extends GetxController {
-  //TODO: Implement HomeController
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GoogleSignIn _googleSignIn = GoogleSignIn();
   RxBool isLoading = false.obs;
@@ -14,15 +13,16 @@ class AuthenticationController extends GetxController {
   Future<void> registerUser(String email, String password) async {
     try {
       isLoading.value = true;
-      await _auth.createUserWithEmailAndPassword(email: email, password: password);
-      Get.snackbar('Success', 'Registrasi sukses',
-      backgroundColor: Colors.green);
-      Get.off(Routes.AUTHENTICATION);
+      await _auth.createUserWithEmailAndPassword(
+          email: email, password: password);
+      Get.snackbar('Success', 'Registration successful',
+          backgroundColor: Colors.green);
 
-
+      // Only navigate on successful registration
+      Get.offNamed(Routes.AUTHENTICATION);
     } catch (error) {
-      Get.snackbar('Error', 'Registrasi gagal: $error',
-      backgroundColor: Colors.red);
+      Get.snackbar('Error', 'Registration failed: $error',
+          backgroundColor: Colors.red);
     } finally {
       isLoading.value = false;
     }
@@ -33,33 +33,62 @@ class AuthenticationController extends GetxController {
     try {
       isLoading.value = true;
       await _auth.signInWithEmailAndPassword(email: email, password: password);
-      Get.snackbar('Sukses', 'Login sukses',
-      backgroundColor: Colors.green);
+      Get.snackbar('Sukses', 'Login sukses', backgroundColor: Colors.green);
     } catch (error) {
       Get.snackbar('Error', 'Login failed: $error',
-      backgroundColor: Colors.red);
-    }finally{
+          backgroundColor: Colors.red);
+    } finally {
       isLoading.value = false;
     }
   }
 
-
   Future<dynamic> signInWithGoogle() async {
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-      final GoogleSignInAuthentication? googleAuth =
-          await googleUser?.authentication;
+      // Check if user canceled the sign-in flow
+      if (googleUser == null) {
+        isLoading.value = false; // Reset loading state if canceled
+        return null; // Return early to avoid further processing
+      }
+
+      final GoogleSignInAuthentication googleAuth =
+          await googleUser.authentication;
 
       final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth?.accessToken,
-        idToken: googleAuth?.idToken,
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
       );
 
-      return await FirebaseAuth.instance.signInWithCredential(credential);
-    } on Exception catch (e) {
-      // TODO
-      print('exception->$e');
+      return await _auth.signInWithCredential(credential);
+    } catch (e) {
+      print('Google Sign-In Exception: $e');
+      isLoading.value = false; // Ensure loading state is reset on error
+      return null; // Return null to indicate failure
+    }
+  }
+
+  Future<void> logout() async {
+    try {
+      isLoading.value = true;
+
+      // Sign out from Firebase (common for all users)
+      await _auth.signOut();
+
+      // Check if user is signed in with Google, if so, sign them out
+      if (await _googleSignIn.isSignedIn()) {
+        await _googleSignIn.signOut();
+      }
+
+      // Navigate to authentication route after logging out
+      Get.offAllNamed(Routes.AUTHENTICATION);
+      Get.snackbar('Logged Out', 'You have successfully logged out',
+          backgroundColor: Colors.green);
+    } catch (error) {
+      Get.snackbar('Error', 'Failed to log out: $error',
+          backgroundColor: Colors.red);
+    } finally {
+      isLoading.value = false;
     }
   }
 }

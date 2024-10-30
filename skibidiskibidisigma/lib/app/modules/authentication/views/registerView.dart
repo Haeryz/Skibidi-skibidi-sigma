@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/authentication/controllers/authentication_controller.dart';
+import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 
 class RegisterPage extends StatelessWidget {
-  final AuthenticationController _authController = Get.find<AuthenticationController>();
+  final AuthenticationController _authController =
+      Get.find<AuthenticationController>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 

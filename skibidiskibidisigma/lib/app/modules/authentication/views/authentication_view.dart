@@ -157,8 +157,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
                 ),
                 onPressed: () async {
                   if (!controller.isLoading.value) {
-                    controller.isLoading.value =
-                        true; // Set loading state to true
+                    controller.isLoading.value = true; // Set loading state to true
                     var userCredential = await controller.signInWithGoogle();
 
                     if (userCredential != null) {
