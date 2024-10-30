@@ -54,6 +54,8 @@ dependencies:
   maplibre_gl: ^0.20.0
   webview_flutter: ^4.10.0
   cloud_firestore: ^5.4.4
+  firebase_storage: ^12.3.4
+  elegant_notification: ^2.3.0
 
 dev_dependencies:
   flutter_test:

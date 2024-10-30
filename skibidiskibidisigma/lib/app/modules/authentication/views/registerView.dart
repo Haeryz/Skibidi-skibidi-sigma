@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/authentication/controllers/authentication_controller.dart';
-import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 
 class RegisterPage extends StatelessWidget {
   final AuthenticationController _authController =

@@ -28,10 +28,16 @@ class ProfileView extends GetView<ProfileController> {
               children: [
                 Obx(() => CircleAvatar(
                       radius: 35,
-                      backgroundImage: profileController.profileImage.value !=
-                              null
-                          ? FileImage(profileController.profileImage.value!)
-                          : const AssetImage('assets/icon/pfp_placeholder.png'),
+                      backgroundImage:
+                          profileController.profileImage.value != null
+                              ? FileImage(profileController.profileImage.value!)
+                              : profileController.profileImageUrl.value != null
+                                  ? NetworkImage(profileController
+                                      .profileImageUrl
+                                      .value!) // Use NetworkImage for URL
+                                  : const AssetImage(
+                                          'assets/icon/pfp_placeholder.png')
+                                      as ImageProvider,
                     )),
                 Positioned(
                   bottom: 0,
@@ -128,7 +134,7 @@ class ProfileView extends GetView<ProfileController> {
                 textAlign: TextAlign.start,
                 textAlignVertical: TextAlignVertical.top,
                 decoration: InputDecoration(
-                    hintText: 'Dngin tetapi tidak kejam',
+                    hintText: 'Dingin tetapi tidak kejam',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
                     ),

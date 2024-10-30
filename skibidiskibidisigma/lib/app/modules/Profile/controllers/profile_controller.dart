@@ -1,14 +1,30 @@
 import 'dart:io';
-import 'package:get/get.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ProfileController extends GetxController {
-  var profileImage = Rx<File?>(null); 
+  var profileImage = Rx<File?>(null);
+  var profileImageUrl = Rx<String?>(null); // Add this line
   final ImagePicker _picker = ImagePicker();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchProfileImageUrl(); // Fetch the profile image URL on initialization
+  }
+
+  Future<void> fetchProfileImageUrl() async {
+    final user = _auth.currentUser;
+    if (user != null && user.photoURL != null) {
+      profileImageUrl.value = user.photoURL; // Set the image URL
+    }
+  }
 
   Future<void> pickImage() async {
-    // Show a modal bottom sheet to select between camera and gallery
     final source = await Get.bottomSheet<ImageSource>(
       Container(
         padding: const EdgeInsets.all(20),
@@ -33,15 +49,45 @@ class ProfileController extends GetxController {
       ),
     );
 
-    // Proceed to pick the image from the selected source
     if (source != null) {
       final pickedFile = await _picker.pickImage(source: source);
 
       if (pickedFile != null) {
         profileImage.value = File(pickedFile.path);
+        await uploadProfileImage(); // Call upload function after selecting image
       } else {
         print('No image selected.');
       }
+    }
+  }
+
+  Future<void> uploadProfileImage() async {
+    if (profileImage.value != null) {
+      try {
+        // Get current user
+        final User? user = _auth.currentUser;
+        if (user == null) throw 'User not logged in';
+
+        // Set the path in Firebase Storage
+        String filePath = 'profileImages/${user.uid}.jpg';
+        Reference storageRef = FirebaseStorage.instance.ref().child(filePath);
+
+        // Upload image to Firebase Storage
+        await storageRef.putFile(profileImage.value!);
+
+        // Retrieve the download URL
+        String downloadUrl = await storageRef.getDownloadURL();
+
+        // Update user profile with image URL
+        await user.updatePhotoURL(downloadUrl);
+        profileImageUrl.value =
+            downloadUrl; // Set the image URL in the controller
+        Get.snackbar('Success', 'Profile picture updated successfully');
+      } catch (error) {
+        Get.snackbar('Error', 'Failed to upload profile picture: $error');
+      }
+    } else {
+      Get.snackbar('Error', 'No image selected to upload');
     }
   }
 }
