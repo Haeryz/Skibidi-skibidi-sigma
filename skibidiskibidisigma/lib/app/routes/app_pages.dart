@@ -3,16 +3,15 @@ import 'package:skibidiskibidisigma/app/modules/Trip/bindings/trip_binding.dart'
 import 'package:skibidiskibidisigma/app/modules/Trip/views/trip_view.dart';
 import 'package:skibidiskibidisigma/app/modules/akun/bindings/akun_binding.dart';
 import 'package:skibidiskibidisigma/app/modules/akun/views/akun_view.dart';
+import 'package:skibidiskibidisigma/app/modules/plan/bindings/plan_binding.dart';
+import 'package:skibidiskibidisigma/app/modules/plan/views/plan_view.dart';
 import 'package:skibidiskibidisigma/app/modules/search/bindings/search_binding.dart';
-import 'package:skibidiskibidisigma/app/modules/Plan/bindings/plan_binding.dart';
-import 'package:skibidiskibidisigma/app/modules/Plan/views/plan_view.dart';
 import 'package:skibidiskibidisigma/app/modules/Profile/bindings/profile_binding.dart';
 import 'package:skibidiskibidisigma/app/modules/Profile/views/profile_view.dart';
 import 'package:skibidiskibidisigma/app/modules/authentication/bindings/authentication_binding.dart';
 import 'package:skibidiskibidisigma/app/modules/authentication/views/authentication_view.dart';
 import 'package:skibidiskibidisigma/app/modules/wikipedia/bindings/home_binding.dart';
 import 'package:skibidiskibidisigma/app/modules/wikipedia/views/wikipedia_view.dart';
-
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/splash_screen/views/splash_view.dart';
@@ -51,11 +50,6 @@ class AppPages {
       binding: ProfileBinding(),
     ),
     GetPage(
-      name: _Paths.PLAN,
-      page: () => const PlanView(),
-      binding: PlanBinding(),
-    ),
-    GetPage(
       name: _Paths.WIKIPEDIA,
       page: () => const WikipediaView(),
       binding: wikipediaBinding(),
@@ -69,6 +63,11 @@ class AppPages {
       name: _Paths.HOME,
       page: () => TripView(),
       binding: TripBinding(),
+    ),
+    GetPage(
+      name: _Paths.PLAN,
+      page: () => PlanView(),
+      binding: PlanBinding(),
     ),
   ];
 }
