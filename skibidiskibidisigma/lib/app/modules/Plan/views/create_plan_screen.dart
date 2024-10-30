@@ -110,7 +110,7 @@ class CreatePlanScreen extends StatelessWidget {
   Widget _buildWidgetFormSecondary(BuildContext context) {
     return Container(
       decoration: const BoxDecoration(
-        color: Colors.white,
+        color: Color.fromARGB(255, 247, 247, 247),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(24.0),
           topRight: Radius.circular(24.0),
