@@ -22,6 +22,15 @@ class PlanView extends GetView<PlanController> {
     return Scaffold(
       key: scaffoldState,
       backgroundColor: appColor.colorPrimary,
+      appBar: AppBar(
+        title: Text('Trip List'),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Get.back();
+          },
+        ),
+      ),
       body: SafeArea(
         child: Stack(
           children: <Widget>[
@@ -33,7 +42,7 @@ class PlanView extends GetView<PlanController> {
       floatingActionButton: FloatingActionButton(
         child: Icon(
           Icons.add,
-          color: Colors.white,
+          color: Color.fromARGB(255, 247, 247, 247),
         ),
         onPressed: () async {
           bool? result = await Get.to(() => CreatePlanScreen(isEdit: false));
