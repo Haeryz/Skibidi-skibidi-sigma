@@ -202,7 +202,10 @@ class HomeView extends GetView<HomeController> {
               ),
               ElevatedButton(onPressed: (){
                 homeController.showNotification();
-              }, child: const Text('nigger'),)
+              }, child: const Text('nigger'),),
+              ElevatedButton(onPressed: (){
+                homeController.showNotification();
+              }, child: const Text('test terminated'),)
             ],
           ),
         ),
