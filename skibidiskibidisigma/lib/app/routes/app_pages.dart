@@ -42,7 +42,7 @@ class AppPages {
       ),
       GetPage(
       name: _Paths.AUTHENTICATION,
-      page: () => const AuthenticationView(),
+      page: () =>  AuthenticationView(),
       binding: AuthenticationBinding(),
     ),
     GetPage(
