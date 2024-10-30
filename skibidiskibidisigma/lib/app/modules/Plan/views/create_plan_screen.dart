@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skibidiskibidisigma/app/modules/plan/views/locationAutocomplete.dart';
 import '../controllers/plan_controller.dart';
 import '../views/appColor.dart';
 import '../views/background.dart';
@@ -95,16 +96,12 @@ class CreatePlanScreen extends StatelessWidget {
             decoration: InputDecoration(labelText: 'Name'),
             style: TextStyle(fontSize: 18.0),
           ),
-          TextField(
-            controller: controller.controllerStartLocation,
-            decoration: InputDecoration(labelText: 'Start Location'),
-            style: TextStyle(fontSize: 18.0),
-          ),
-          TextField(
-            controller: controller.controllerDestination,
-            decoration: InputDecoration(labelText: 'Destination'),
-            style: TextStyle(fontSize: 18.0),
-          ),
+          LocationAutocomplete(
+              controller: controller
+                  .controllerStartLocation), // Use the autocomplete widget here
+          LocationAutocomplete(
+              controller: controller
+                  .controllerDestination), // Use the autocomplete widget here
         ],
       ),
     );
