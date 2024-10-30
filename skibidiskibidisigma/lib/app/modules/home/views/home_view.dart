@@ -11,6 +11,7 @@ class HomeView extends GetView<HomeController> {
    Widget build(BuildContext context) {
       // Initialize profile controller
       final ProfileController profileController = Get.put(ProfileController());
+      final HomeController homeController = Get.put(HomeController());
 
       // State to track if description is expanded
       RxBool isExpanded = false.obs;
@@ -199,6 +200,9 @@ class HomeView extends GetView<HomeController> {
                   ],
                 ),
               ),
+              ElevatedButton(onPressed: (){
+                homeController.showNotification();
+              }, child: const Text('nigger'),)
             ],
           ),
         ),

@@ -33,6 +33,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  awesome_notifications:
+    dependency: "direct main"
+    description:
+      name: awesome_notifications
+      sha256: d051ffb694a53da216ff13d02c8ec645d75320048262f7e6b3c1d95a4f54c902
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.10.0"
   boolean_selector:
     dependency: transitive
     description:
@@ -129,14 +137,22 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
-  elegant_notification:
-    dependency: "direct main"
+  dio:
+    dependency: transitive
     description:
-      name: elegant_notification
-      sha256: "5a5943c194d5a70ae0b871474eac4bb7b45137ac35cccf758743b22d4c83d037"
+      name: dio
+      sha256: "5598aa796bbf4699afd5c67c0f5f6e2ed542afc956884b9cd58c306966efc260"
       url: "https://pub.dev"
     source: hosted
-    version: "2.3.0"
+    version: "5.7.0"
+  dio_web_adapter:
+    dependency: transitive
+    description:
+      name: dio_web_adapter
+      sha256: "33259a9276d6cea88774a0000cfae0d861003497755969c92faa223108620dc8"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   fake_async:
     dependency: transitive
     description:
@@ -270,6 +286,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.0"
+  flutter_gemini:
+    dependency: "direct main"
+    description:
+      name: flutter_gemini
+      sha256: "993765fafb595e5d32153f393b9c5e71f853caa5bef123d292c21f672d2b9675"
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.5"
   flutter_keyboard_visibility:
     dependency: transitive
     description:
@@ -368,6 +392,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "10.7.0"
+  freezed_annotation:
+    dependency: transitive
+    description:
+      name: freezed_annotation
+      sha256: c2e2d632dd9b8a2b7751117abcfc2b4888ecfe181bd9fca7170d9ef02e595fe2
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.4"
   geocoding:
     dependency: "direct main"
     description:
@@ -608,6 +640,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.1"
+  json_annotation:
+    dependency: transitive
+    description:
+      name: json_annotation
+      sha256: "1ce844379ca14835a50d2f019a3099f419082cfdd231cd86a142af94dd5c6bb1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.9.0"
   latlong2:
     dependency: "direct main"
     description:

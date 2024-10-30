@@ -1,11 +1,18 @@
+import 'dart:ui';
+
+import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class HomeController extends GetxController {
-  //TODO: Implement HomeController
-
-  final count = 0.obs;
-
-
-
-  void increment() => count.value++;
+ void showNotification() {
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: 10,
+        channelKey: 'basic_channel',
+        title: 'Hello, Flutter!',
+        body: 'This is a background notification test.',
+      ),
+    );
+  }
 }

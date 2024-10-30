@@ -1,21 +1,24 @@
 import 'package:get/get.dart';
-import 'package:skibidiskibidisigma/app/modules/Trip/bindings/trip_binding.dart';
-import 'package:skibidiskibidisigma/app/modules/Trip/views/trip_view.dart';
-import 'package:skibidiskibidisigma/app/modules/akun/bindings/akun_binding.dart';
-import 'package:skibidiskibidisigma/app/modules/akun/views/akun_view.dart';
-import 'package:skibidiskibidisigma/app/modules/plan/bindings/plan_binding.dart';
-import 'package:skibidiskibidisigma/app/modules/plan/views/plan_view.dart';
-import 'package:skibidiskibidisigma/app/modules/search/bindings/search_binding.dart';
-import 'package:skibidiskibidisigma/app/modules/Profile/bindings/profile_binding.dart';
-import 'package:skibidiskibidisigma/app/modules/Profile/views/profile_view.dart';
-import 'package:skibidiskibidisigma/app/modules/authentication/bindings/authentication_binding.dart';
-import 'package:skibidiskibidisigma/app/modules/authentication/views/authentication_view.dart';
-import 'package:skibidiskibidisigma/app/modules/wikipedia/bindings/home_binding.dart';
-import 'package:skibidiskibidisigma/app/modules/wikipedia/views/wikipedia_view.dart';
+
+import '../modules/Profile/bindings/profile_binding.dart';
+import '../modules/Profile/views/profile_view.dart';
+import '../modules/Trip/bindings/trip_binding.dart';
+import '../modules/Trip/views/trip_view.dart';
+import '../modules/akun/bindings/akun_binding.dart';
+import '../modules/akun/views/akun_view.dart';
+import '../modules/authentication/bindings/authentication_binding.dart';
+import '../modules/authentication/views/authentication_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
-import '../modules/splash_screen/views/splash_view.dart';
+import '../modules/notification/bindings/notification_binding.dart';
+import '../modules/notification/views/notification_view.dart';
+import '../modules/plan/bindings/plan_binding.dart';
+import '../modules/plan/views/plan_view.dart';
+import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
+import '../modules/splash_screen/views/splash_view.dart';
+import '../modules/wikipedia/bindings/home_binding.dart';
+import '../modules/wikipedia/views/wikipedia_view.dart';
 
 part 'app_routes.dart';
 
@@ -38,10 +41,10 @@ class AppPages {
       name: _Paths.SEARCH,
       page: () => const SearchView(),
       binding: SearchBinding(),
-      ),
-      GetPage(
+    ),
+    GetPage(
       name: _Paths.AUTHENTICATION,
-      page: () =>  AuthenticationView(),
+      page: () => AuthenticationView(),
       binding: AuthenticationBinding(),
     ),
     GetPage(
@@ -68,6 +71,11 @@ class AppPages {
       name: _Paths.PLAN,
       page: () => PlanView(),
       binding: PlanBinding(),
+    ),
+    GetPage(
+      name: _Paths.NOTIFICATION,
+      page: () => const NotificationView(),
+      binding: NotificationBinding(),
     ),
   ];
 }
