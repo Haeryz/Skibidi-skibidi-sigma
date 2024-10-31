@@ -1,7 +1,9 @@
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:workmanager/workmanager.dart';
 
 class PlanController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -123,4 +125,48 @@ class PlanController extends GetxController {
   void _showSnackBarMessage(String message) {
     Get.snackbar("Error", message, snackPosition: SnackPosition.BOTTOM);
   }
+
+  void registerBackgroundNotification() {
+  Workmanager().registerPeriodicTask(
+    "tripArrivalNotificationTask",
+    "tripArrivalNotificationTask",
+    frequency: Duration(hours: 24), // Runs daily
+  );
+}
+
+
+  void checkTripArrivalNotifications() async {
+  final currentDate = DateTime.now();
+  final threeDaysFromNow = currentDate.add(Duration(days: 3));
+
+  print("Current Date: ${currentDate.toString()}");
+  print("Three Days From Now: ${threeDaysFromNow.toString()}");
+
+  final tripsSnapshot = await firestore.collection('trips').get();
+
+  for (var doc in tripsSnapshot.docs) {
+    final tripData = doc.data();
+    final arrivalDateText = tripData['arrivalDate'];
+
+    if (arrivalDateText != null) {
+      final arrivalDate = DateFormat('dd MMMM yyyy').parse(arrivalDateText);
+      print("Checking trip: ${tripData['destination']}, Arrival Date: $arrivalDate");
+
+      if (arrivalDate.isBefore(threeDaysFromNow) &&
+          arrivalDate.isAfter(currentDate)) {
+        AwesomeNotifications().createNotification(
+          content: NotificationContent(
+            id: doc.id.hashCode,
+            channelKey: 'basic_channel',
+            title: 'Upcoming Trip Reminder',
+            body:
+                'Your trip to ${tripData['destination']} is in less than 3 days!',
+            notificationLayout: NotificationLayout.BigText,
+          ),
+        );
+        print("Notification sent for trip: ${tripData['destination']}");
+      }
+    }
+  }
+}
 }

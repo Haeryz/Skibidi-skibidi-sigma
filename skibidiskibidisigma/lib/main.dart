@@ -4,7 +4,9 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/authentication/controllers/authentication_controller.dart';
+import 'package:skibidiskibidisigma/app/modules/plan/controllers/plan_controller.dart';
 import 'package:skibidiskibidisigma/firebase_options.dart';
+import 'package:workmanager/workmanager.dart';
 import 'app/routes/app_pages.dart';
 import 'app/modules/search/controllers/search_controller.dart'
     as local; // Import SearchController
@@ -15,7 +17,7 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
   AwesomeNotifications().createNotification(
     content: NotificationContent(
-      id: 10, // You may want to generate unique IDs
+      id: 11, // You may want to generate unique IDs
       channelKey: 'basic_channel',
       title: message.notification?.title ?? 'Background Notification',
       body: message.notification?.body ??
@@ -23,11 +25,21 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
     ),
   );
 }
+void callbackDispatcher() {
+  Workmanager().executeTask((task, inputData) async {
+    print("Workmanager task triggered: $task");
+    final PlanController controller = Get.put(PlanController());
+    controller.checkTripArrivalNotifications();
+    return Future.value(true);
+  });
+}
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  Workmanager().initialize(callbackDispatcher, isInDebugMode: true); 
 
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   String? token = await messaging.getToken();
@@ -38,22 +50,29 @@ void main() async {
   // Register controllers after Firebase initialization
   Get.put(AuthenticationController());
   Get.lazyPut<local.SearchController>(() => local.SearchController());
+  Get.put(PlanController());
+  
   final String apigeminiKey = dotenv.env['GEMINI_API_KEY']!;
   Gemini.init(apiKey: apigeminiKey);
-  //background notification
+  
+  // Background notification
   AwesomeNotifications().initialize(
-    null, // icon for notifications (use app icon or any asset)
+    null,
     [
       NotificationChannel(
         channelKey: 'basic_channel',
         channelName: 'Basic notifications',
         channelDescription: 'Notification channel for basic tests',
         defaultColor: Colors.blue,
-        importance: NotificationImportance.High,
+        importance: NotificationImportance.Max,
         channelShowBadge: true,
       ),
     ],
   );
+
+  // Register the background notification task
+  final PlanController planController = Get.find<PlanController>();
+  planController.registerBackgroundNotification();
 
   runApp(
     GetMaterialApp(

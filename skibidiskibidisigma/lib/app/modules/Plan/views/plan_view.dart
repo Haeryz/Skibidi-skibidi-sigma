@@ -36,6 +36,9 @@ class PlanView extends GetView<PlanController> {
           children: <Widget>[
             WidgetBackground(),
             _buildWidgetListTodo(widthScreen, heightScreen, context),
+            ElevatedButton(onPressed: (){
+              controller.checkTripArrivalNotifications();
+            }, child: const Text('test notification')),
           ],
         ),
       ),
@@ -146,6 +149,9 @@ class PlanView extends GetView<PlanController> {
                                         name: trip['name'],
                                         description: trip['description'],
                                         date: trip['date'],
+                                        arrivalDate: trip['arrivalDate'],
+                                        startLocation: trip['startLocation'],
+                                        destination: trip['destination'],
                                       ));
                               if (result != null && result) {
                                 ScaffoldMessenger.of(context).showSnackBar(
