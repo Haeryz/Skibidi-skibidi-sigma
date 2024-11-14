@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skibidiskibidisigma/app/modules/navbar/views/navbar_view.dart';
 import 'package:skibidiskibidisigma/app/modules/plan/views/appColor.dart';
 import 'package:skibidiskibidisigma/app/modules/plan/views/background.dart';
 import 'package:skibidiskibidisigma/app/modules/plan/views/create_plan_screen.dart';
@@ -21,8 +22,9 @@ class PlanView extends GetView<PlanController> {
 
     return Scaffold(
       key: scaffoldState,
-      backgroundColor: appColor.colorPrimary,
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: const Text('Trip List'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
@@ -58,6 +60,8 @@ class PlanView extends GetView<PlanController> {
           color: Color.fromARGB(255, 247, 247, 247),
         ),
       ),
+
+      bottomNavigationBar: NavbarView(),
     );
   }
 

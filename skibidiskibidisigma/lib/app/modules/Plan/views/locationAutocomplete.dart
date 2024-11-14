@@ -42,9 +42,9 @@ void _onChanged(String value) async {
       children: [
         TextField(
           controller: widget.controller,
-          decoration: const InputDecoration(labelText: 'Location'),
+          decoration: InputDecoration(labelText: 'Location'),
           onChanged: _onChanged,
-          style: const TextStyle(fontSize: 18.0),
+          style: TextStyle(fontSize: 18.0),
         ),
         if (_suggestions.isNotEmpty)
           Container(

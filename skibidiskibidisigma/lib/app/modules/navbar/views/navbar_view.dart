@@ -1,24 +1,46 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
+
+import '../controllers/navbar_controller.dart';
+
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 
 import '../controllers/navbar_controller.dart';
 
 class NavbarView extends GetView<NavbarController> {
-  const NavbarView({super.key});
+  NavbarView({super.key});
+  final NavbarController navbarController = Get.find<NavbarController>();
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('NavbarView'),
-        centerTitle: true,
-      ),
-      body: const Center(
-        child: Text(
-          'NavbarView is working',
-          style: TextStyle(fontSize: 20),
-        ),
-      ),
-    );
+    return Obx(() => GNav(
+          gap: 6,
+          haptic: true,
+          tabBorderRadius: 20,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+          color: Colors.grey,
+          activeColor: Colors.black,
+          iconSize: 22,
+          tabBackgroundColor: Colors.red.withOpacity(0.1),
+          textStyle: const TextStyle(fontSize: 12),
+          selectedIndex: navbarController.selectedIndex.value,
+          onTabChange: (index) {
+            navbarController.changeTabIndex(index); // Update selected index
+          },
+          tabs: const [
+            GButton(icon: Icons.home_filled, text: 'Home'),
+            GButton(icon: Icons.search_outlined, text: 'Cari'),
+            GButton(icon: Icons.cases_outlined, text: 'Rencanakan'),
+            GButton(icon: Icons.edit, text: 'Ulasan'),
+            GButton(icon: Icons.account_circle_outlined, text: 'Akun'),
+          ],
+        ));
   }
 }
+
+

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:skibidiskibidisigma/app/modules/navbar/views/navbar_view.dart';
 
 import '../controllers/akun_controller.dart';
 
@@ -111,35 +112,7 @@ class ProfilePage extends StatelessWidget {
           )
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: 4,
-        onTap: (index) {
-          // Handle tab change
-        },
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search),
-            label: 'Cari',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Rencana',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.rate_review),
-            label: 'Ulasan',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Akun',
-          ),
-        ],
-      ),
+      bottomNavigationBar: NavbarView(),
     );
   }
 
