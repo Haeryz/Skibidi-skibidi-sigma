@@ -23,7 +23,6 @@ void _onChanged(String value) async {
       });
     } catch (error) {
       // Handle error here (e.g., log it or show a message)
-      print('Error fetching autocomplete: $error');
       setState(() {
         _suggestions = [];
       });
@@ -43,9 +42,9 @@ void _onChanged(String value) async {
       children: [
         TextField(
           controller: widget.controller,
-          decoration: InputDecoration(labelText: 'Location'),
+          decoration: const InputDecoration(labelText: 'Location'),
           onChanged: _onChanged,
-          style: TextStyle(fontSize: 18.0),
+          style: const TextStyle(fontSize: 18.0),
         ),
         if (_suggestions.isNotEmpty)
           Container(

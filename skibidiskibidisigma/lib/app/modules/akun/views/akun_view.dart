@@ -6,8 +6,10 @@ import '../controllers/akun_controller.dart';
 
 import 'package:skibidiskibidisigma/app/modules/authentication/views/authentication_view.dart';
 
+// ignore: camel_case_types
 class akunView extends GetView<akunController> {
   const akunView({super.key});
+  @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Profile UI',
@@ -24,7 +26,7 @@ class ProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Akun'),
+        title: const Text('Akun'),
         backgroundColor: Colors.orange[200],
         elevation: 0,
       ),
@@ -33,7 +35,7 @@ class ProfilePage extends StatelessWidget {
           Container(
             color: const Color.fromARGB(255, 249, 248, 248),
             padding: const EdgeInsets.all(20),
-            child: Column(
+            child: const Column(
               children: [
                 CircleAvatar(
                   radius: 40,
@@ -51,11 +53,11 @@ class ProfilePage extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
           Expanded(
             child: GridView.count(
               crossAxisCount: 2,
-              padding: EdgeInsets.all(16),
+              padding: const EdgeInsets.all(16),
               children: [
                 _buildGridItem(Icons.settings, 'Pengaturan'),
                 _buildGridItem(Icons.bookmark, 'Disimpan'),
@@ -73,14 +75,14 @@ class ProfilePage extends StatelessWidget {
                   context: context,
                   builder: (BuildContext context) {
                     return AlertDialog(
-                      title: Text('Konfirmasi'),
-                      content: Text('Apakah Anda yakin ingin keluar?'),
+                      title: const Text('Konfirmasi'),
+                      content: const Text('Apakah Anda yakin ingin keluar?'),
                       actions: [
                         TextButton(
                           onPressed: () {
                             Navigator.of(context).pop(); // Tutup dialog
                           },
-                          child: Text('Tidak'),
+                          child: const Text('Tidak'),
                         ),
                         TextButton(
                           onPressed: () {
@@ -88,23 +90,23 @@ class ProfilePage extends StatelessWidget {
                             // Navigasi ke halaman AuthenticationView
                             Get.to(() => AuthenticationView());
                           },
-                          child: Text('Ya'),
+                          child: const Text('Ya'),
                         ),
                       ],
                     );
                   },
                 );
               },
-              child: Text('Keluar'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
-                  side: BorderSide(color: Colors.black),
+                  side: const BorderSide(color: Colors.black),
                 ),
-                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
+              child: const Text('Keluar'),
             ),
           )
         ],
@@ -155,7 +157,7 @@ class ProfilePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(icon, size: 40),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Text(title),
           ],
         ),

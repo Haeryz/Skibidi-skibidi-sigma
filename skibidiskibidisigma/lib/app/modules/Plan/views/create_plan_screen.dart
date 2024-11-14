@@ -93,8 +93,8 @@ class CreatePlanScreen extends StatelessWidget {
           const SizedBox(height: 16.0),
           TextField(
             controller: controller.controllerName,
-            decoration: InputDecoration(labelText: 'Name'),
-            style: TextStyle(fontSize: 18.0),
+            decoration: const InputDecoration(labelText: 'Name'),
+            style: const TextStyle(fontSize: 18.0),
           ),
           LocationAutocomplete(
               controller: controller
@@ -125,7 +125,7 @@ class CreatePlanScreen extends StatelessWidget {
               labelText: 'Description',
               suffixIcon: Icon(Icons.description),
             ),
-            style: TextStyle(fontSize: 18.0),
+            style: const TextStyle(fontSize: 18.0),
           ),
           const SizedBox(height: 16.0),
           TextField(
@@ -134,7 +134,7 @@ class CreatePlanScreen extends StatelessWidget {
               labelText: 'Date',
               suffixIcon: Icon(Icons.today),
             ),
-            style: TextStyle(fontSize: 18.0),
+            style: const TextStyle(fontSize: 18.0),
             readOnly: true,
             onTap: () => controller.selectDate(context),
           ),
@@ -145,7 +145,7 @@ class CreatePlanScreen extends StatelessWidget {
               labelText: 'Arrival Date',
               suffixIcon: Icon(Icons.event),
             ),
-            style: TextStyle(fontSize: 18.0),
+            style: const TextStyle(fontSize: 18.0),
             readOnly: true,
             onTap: () => controller.selectArrivalDate(context),
           ),

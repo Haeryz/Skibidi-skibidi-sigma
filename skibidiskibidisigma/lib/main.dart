@@ -27,13 +27,11 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 }
 void callbackDispatcher() {
   Workmanager().executeTask((task, inputData) async {
-    print("Workmanager task triggered: $task");
     final PlanController controller = Get.put(PlanController());
     controller.checkTripArrivalNotifications();
     return Future.value(true);
   });
 }
-
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,9 +39,6 @@ void main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   Workmanager().initialize(callbackDispatcher, isInDebugMode: true); 
 
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  String? token = await messaging.getToken();
-  print("FCM Registration Token: $token");
 
   FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
 

@@ -14,7 +14,7 @@ class WidgetBackground extends StatelessWidget {
           child: Container(
             width: 256.0,
             height: 256.0,
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               backgroundBlendMode: BlendMode.hardLight,
               color: Color.fromARGB(255, 247, 247, 247),
             ),

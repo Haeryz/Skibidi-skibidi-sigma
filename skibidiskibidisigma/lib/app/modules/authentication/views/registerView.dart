@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/authentication/controllers/authentication_controller.dart';
@@ -12,7 +14,7 @@ class RegisterPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Register'),
+        title: const Text('Register'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -22,14 +24,14 @@ class RegisterPage extends StatelessWidget {
           children: [
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: const InputDecoration(labelText: 'Email'),
             ),
             TextField(
               controller: _passwordController,
               obscureText: true,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: const InputDecoration(labelText: 'Password'),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Obx(() {
               return ElevatedButton(
                 onPressed: _authController.isLoading.value
@@ -41,8 +43,8 @@ class RegisterPage extends StatelessWidget {
                         );
                       },
                 child: _authController.isLoading.value
-                    ? CircularProgressIndicator()
-                    : Text('Register'),
+                    ? const CircularProgressIndicator()
+                    : const Text('Register'),
               );
             }),
           ],

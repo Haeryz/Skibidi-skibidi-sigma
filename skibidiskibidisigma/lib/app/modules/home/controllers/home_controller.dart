@@ -1,10 +1,6 @@
-import 'dart:ui';
-
 import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 class HomeController extends GetxController {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   bool _notificationShown = false; // Add this to your HomeController
@@ -35,22 +31,5 @@ class HomeController extends GetxController {
         );
       }
     });
-  }
-
-  //Update the _firebaseMessagingBackgroundHandler
-  Future<void> _firebaseMessagingBackgroundHandler(
-      RemoteMessage message) async {
-    if (!_notificationShown) {
-      // Prevent duplicate notification
-      _notificationShown = true;
-      AwesomeNotifications().createNotification(
-        content: NotificationContent(
-          id: 11,
-          channelKey: 'basic_channel',
-          title: message.notification?.title ?? 'Background Notification',
-          body: message.notification?.body ?? 'This is from terminated state.',
-        ),
-      );
-    }
   }
 }

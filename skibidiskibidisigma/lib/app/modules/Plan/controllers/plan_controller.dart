@@ -15,8 +15,8 @@ class PlanController extends GetxController {
   final TextEditingController controllerArrivalDate = TextEditingController();
 
   var isLoading = false.obs;
-  var date = DateTime.now().add(Duration(days: 1)).obs;
-  var arrivalDate = DateTime.now().add(Duration(days: 1)).obs;
+  var date = DateTime.now().add(const Duration(days: 1)).obs;
+  var arrivalDate = DateTime.now().add(const Duration(days: 1)).obs;
 
   Future<void> fetchTasks() async {
     // Add logic here to fetch tasks if necessary
@@ -130,17 +130,15 @@ class PlanController extends GetxController {
   Workmanager().registerPeriodicTask(
     "tripArrivalNotificationTask",
     "tripArrivalNotificationTask",
-    frequency: Duration(hours: 24), // Runs daily
+    frequency: const Duration(hours: 24), // Runs daily
   );
 }
 
 
   void checkTripArrivalNotifications() async {
   final currentDate = DateTime.now();
-  final threeDaysFromNow = currentDate.add(Duration(days: 3));
+  final threeDaysFromNow = currentDate.add(const Duration(days: 3));
 
-  print("Current Date: ${currentDate.toString()}");
-  print("Three Days From Now: ${threeDaysFromNow.toString()}");
 
   final tripsSnapshot = await firestore.collection('trips').get();
 
@@ -150,7 +148,7 @@ class PlanController extends GetxController {
 
     if (arrivalDateText != null) {
       final arrivalDate = DateFormat('dd MMMM yyyy').parse(arrivalDateText);
-      print("Checking trip: ${tripData['destination']}, Arrival Date: $arrivalDate");
+
 
       if (arrivalDate.isBefore(threeDaysFromNow) &&
           arrivalDate.isAfter(currentDate)) {
@@ -164,7 +162,6 @@ class PlanController extends GetxController {
             notificationLayout: NotificationLayout.BigText,
           ),
         );
-        print("Notification sent for trip: ${tripData['destination']}");
       }
     }
   }

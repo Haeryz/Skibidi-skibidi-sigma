@@ -162,7 +162,7 @@ class ProfileView extends GetView<ProfileController> {
                       textAlign: TextAlign.center,
                       style: TextStyle(color: Colors.white),
                     ))),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(

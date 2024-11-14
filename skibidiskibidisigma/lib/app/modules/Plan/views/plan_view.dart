@@ -7,7 +7,7 @@ import 'package:skibidiskibidisigma/app/modules/plan/views/create_plan_screen.da
 import '../controllers/plan_controller.dart';
 
 class PlanView extends GetView<PlanController> {
-  PlanView({Key? key}) : super(key: key);
+  PlanView({super.key});
 
   final GlobalKey<ScaffoldState> scaffoldState = GlobalKey<ScaffoldState>();
   final AppColor appColor = AppColor();
@@ -23,9 +23,9 @@ class PlanView extends GetView<PlanController> {
       key: scaffoldState,
       backgroundColor: appColor.colorPrimary,
       appBar: AppBar(
-        title: Text('Trip List'),
+        title: const Text('Trip List'),
         leading: IconButton(
-          icon: Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back),
           onPressed: () {
             Get.back();
           },
@@ -43,20 +43,20 @@ class PlanView extends GetView<PlanController> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(
-          Icons.add,
-          color: Color.fromARGB(255, 247, 247, 247),
-        ),
         onPressed: () async {
           bool? result = await Get.to(() => CreatePlanScreen(isEdit: false));
           if (result != null && result) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Trip has been created')),
+              const SnackBar(content: Text('Trip has been created')),
             );
             controller.fetchTasks(); // Update trip list
           }
         },
         backgroundColor: appColor.colorTertiary,
+        child: const Icon(
+          Icons.add,
+          color: Color.fromARGB(255, 247, 247, 247),
+        ),
       ),
     );
   }
@@ -85,10 +85,10 @@ class PlanView extends GetView<PlanController> {
               builder: (BuildContext context,
                   AsyncSnapshot<QuerySnapshot> snapshot) {
                 if (!snapshot.hasData) {
-                  return Center(child: CircularProgressIndicator());
+                  return const Center(child: CircularProgressIndicator());
                 }
                 return ListView.builder(
-                  padding: EdgeInsets.all(8.0),
+                  padding: const EdgeInsets.all(8.0),
                   itemCount: snapshot.data?.docs.length ?? 0,
                   itemBuilder: (BuildContext context, int index) {
                     var document = snapshot.data!.docs[index];
@@ -116,25 +116,25 @@ class PlanView extends GetView<PlanController> {
                               child: Center(
                                 child: Text(
                                   '${int.parse(strDate.split(' ')[0])}',
-                                  style: TextStyle(color: Colors.white),
+                                  style: const TextStyle(color: Colors.white),
                                 ),
                               ),
                             ),
-                            SizedBox(height: 4.0),
+                            const SizedBox(height: 4.0),
                             Text(
                               strDate.split(' ')[1],
-                              style: TextStyle(fontSize: 12.0),
+                              style: const TextStyle(fontSize: 12.0),
                             ),
                           ],
                         ),
                         trailing: PopupMenuButton<String>(
                           itemBuilder: (BuildContext context) {
                             return <PopupMenuEntry<String>>[
-                              PopupMenuItem<String>(
+                              const PopupMenuItem<String>(
                                 value: 'edit',
                                 child: Text('Edit'),
                               ),
-                              PopupMenuItem<String>(
+                              const PopupMenuItem<String>(
                                 value: 'delete',
                                 child: Text('Delete'),
                               ),
@@ -155,7 +155,7 @@ class PlanView extends GetView<PlanController> {
                                       ));
                               if (result != null && result) {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  SnackBar(
+                                  const SnackBar(
                                       content: Text('Trip has been updated')),
                                 );
                                 controller.fetchTasks(); // Update trip list
@@ -165,7 +165,7 @@ class PlanView extends GetView<PlanController> {
                                   context, document.id);
                             }
                           },
-                          child: Icon(Icons.more_vert),
+                          child: const Icon(Icons.more_vert),
                         ),
                       ),
                     );
@@ -184,17 +184,17 @@ class PlanView extends GetView<PlanController> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Delete Trip'),
-          content: Text('Are you sure you want to delete this trip?'),
+          title: const Text('Delete Trip'),
+          content: const Text('Are you sure you want to delete this trip?'),
           actions: <Widget>[
             TextButton(
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
               onPressed: () {
                 Navigator.of(context).pop();
               },
             ),
             TextButton(
-              child: Text('Delete'),
+              child: const Text('Delete'),
               onPressed: () async {
                 await firestore
                     .collection('trips')
@@ -202,7 +202,7 @@ class PlanView extends GetView<PlanController> {
                     .delete(); // Change to 'trips'
                 Navigator.of(context).pop();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Trip has been deleted')),
+                  const SnackBar(content: Text('Trip has been deleted')),
                 );
                 controller.fetchTasks(); // Update trip list
               },

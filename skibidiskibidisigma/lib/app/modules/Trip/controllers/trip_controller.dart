@@ -41,7 +41,7 @@ class TripController extends GetxController {
       
       return query.docs.isNotEmpty;
     } catch (e) {
-      print('Error checking trip existence: $e');
+
       return false;
     }
   }
@@ -61,7 +61,7 @@ class TripController extends GetxController {
       );
       Get.back(); // Navigate back to PlanView
     } catch (e) {
-      print('Error adding trip to Firestore: $e');
+
       Get.snackbar(
         'Error', 
         'Gagal menyimpan trip: $e', 

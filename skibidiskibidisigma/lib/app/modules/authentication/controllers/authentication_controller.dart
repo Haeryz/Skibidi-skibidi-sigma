@@ -63,7 +63,7 @@ class AuthenticationController extends GetxController {
 
       return await _auth.signInWithCredential(credential);
     } catch (e) {
-      print('Google Sign-In Exception: $e');
+      Get.snackbar('Error', 'Login failed: $e', backgroundColor: Colors.red);
       isLoading.value = false; // Ensure loading state is reset on error
       return null; // Return null to indicate failure
     }
