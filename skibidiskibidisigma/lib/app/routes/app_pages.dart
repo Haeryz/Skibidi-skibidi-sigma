@@ -16,6 +16,8 @@ import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
 import '../modules/plan/bindings/plan_binding.dart';
 import '../modules/plan/views/plan_view.dart';
+import '../modules/reels/bindings/reels_binding.dart';
+import '../modules/reels/views/reels_view.dart';
 import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
 import '../modules/splash_screen/views/splash_view.dart';
@@ -83,6 +85,11 @@ class AppPages {
       name: _Paths.NAVBAR,
       page: () => NavbarView(),
       binding: NavbarBinding(),
+    ),
+    GetPage(
+      name: _Paths.REELS,
+      page: () => const ReelsView(),
+      binding: ReelsBinding(),
     ),
   ];
 }
