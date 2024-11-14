@@ -34,6 +34,7 @@ class AuthenticationController extends GetxController {
       isLoading.value = true;
       await _auth.signInWithEmailAndPassword(email: email, password: password);
       Get.snackbar('Sukses', 'Login sukses', backgroundColor: Colors.green);
+      Get.toNamed(Routes.PROFILE);
     } catch (error) {
       Get.snackbar('Error', 'Login failed: $error',
           backgroundColor: Colors.red);

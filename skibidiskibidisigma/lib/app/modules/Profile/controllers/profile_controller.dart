@@ -4,6 +4,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_cropper/image_cropper.dart';
 
 class ProfileController extends GetxController {
   var profileImage = Rx<File?>(null);
@@ -51,12 +52,16 @@ class ProfileController extends GetxController {
 
     if (source != null) {
       final pickedFile = await _picker.pickImage(source: source);
-
       if (pickedFile != null) {
-        profileImage.value = File(pickedFile.path);
-        await uploadProfileImage(); // Call upload function after selecting image
+        try {
+          profileImage.value = File(pickedFile.path);
+          await uploadProfileImage(); // Call upload function after selecting image
+          Get.snackbar('Success', 'Image selected');
+        } catch (e) {
+          Get.snackbar('Error', 'Error : $e', backgroundColor: Colors.red);
+        }
       } else {
-        print('No image selected.');
+        Get.snackbar('Error', 'No image selected', backgroundColor: Colors.red);
       }
     }
   }

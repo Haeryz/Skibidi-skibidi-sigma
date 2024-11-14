@@ -94,7 +94,6 @@ class AuthenticationView extends GetView<AuthenticationController> {
                               _emailController.text,
                               _passwordController.text,
                             );
-                            Get.toNamed(Routes.PROFILE);
                           }
                         },
                   style: ElevatedButton.styleFrom(
@@ -158,7 +157,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
                 onPressed: () async {
                   if (!controller.isLoading.value) {
                     controller.isLoading.value = true; // Set loading state to true
-                    var userCredential = await controller.signInWithGoogle();
+                    var userCredential = await controller.signInWithGoogle(); //automatically assign variable type
 
                     if (userCredential != null) {
                       Get.snackbar('Sukses', 'Login Google sukses',
