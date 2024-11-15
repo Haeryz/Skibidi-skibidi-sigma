@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:skibidiskibidisigma/app/modules/review/controllers/review_controller.dart';
 
 class CreateReviewView extends StatelessWidget {
+  final ReviewController reviewController = Get.find<ReviewController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,7 +19,7 @@ class CreateReviewView extends StatelessWidget {
           },
         ),
         title: const Text(
-          'YuLia Frozen Food 1',
+          'Mewing fanum tax',
           style: TextStyle(color: Colors.black),
         ),
         centerTitle: true,
@@ -57,16 +59,45 @@ class CreateReviewView extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: List.generate(5, (index) {
-                return const Icon(
-                  Icons.star_border,
-                  color: Colors.grey,
-                  size: 40,
-                );
-              }),
-            ),
+            Obx(() {
+              return Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: List.generate(5, (index) {
+                  return GestureDetector(
+                    onTap: () {
+                      reviewController
+                          .updateStars(index + 1); // Update stars in controller
+                    },
+                    child: AnimatedScale(
+                      scale: reviewController.selectedStars.value > index
+                          ? 1.2
+                          : 1.0,
+                      duration: const Duration(milliseconds: 300),
+                      curve: Curves.easeOut,
+                      child: Icon(
+                        reviewController.selectedStars.value > index
+                            ? Icons.star
+                            : Icons.star_border,
+                        color: reviewController.selectedStars.value > index
+                            ? Colors.amber
+                            : Colors.grey,
+                        size: 40,
+                      ),
+                    ),
+                  );
+                }),
+              );
+            }),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.center,
+            //   children: List.generate(5, (index) {
+            //     return const Icon(
+            //       Icons.star_border,
+            //       color: Colors.grey,
+            //       size: 40,
+            //     );
+            //   }),
+            // ),
             const SizedBox(height: 20),
             TextField(
               maxLines: 3,

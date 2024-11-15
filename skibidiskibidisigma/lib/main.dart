@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/authentication/controllers/authentication_controller.dart';
 import 'package:skibidiskibidisigma/app/modules/navbar/controllers/navbar_controller.dart';
 import 'package:skibidiskibidisigma/app/modules/plan/controllers/plan_controller.dart';
+import 'package:skibidiskibidisigma/app/modules/review/controllers/review_controller.dart';
 import 'package:skibidiskibidisigma/firebase_options.dart';
 import 'package:workmanager/workmanager.dart';
 import 'app/routes/app_pages.dart';
@@ -48,6 +49,7 @@ void main() async {
   Get.lazyPut<local.SearchController>(() => local.SearchController());
   Get.put(PlanController());
   Get.put(NavbarController());
+  Get.put(ReviewController());
   
   final String apigeminiKey = dotenv.env['GEMINI_API_KEY']!;
   Gemini.init(apiKey: apigeminiKey);

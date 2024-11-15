@@ -103,23 +103,23 @@ class ReviewView extends GetView<ReviewController> {
               const SizedBox(
                 height: 20,
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: 15, // 15 TextFields
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 8.0, horizontal: 10),
-                      child: TextField(
-                        decoration: InputDecoration(
-                          labelText: 'Ulasan ${index + 1}',
-                          border: OutlineInputBorder(),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+              // Expanded(
+              //   child: ListView.builder(
+              //     itemCount: 15, // 15 TextFields
+              //     itemBuilder: (context, index) {
+              //       return Padding(
+              //         padding: const EdgeInsets.symmetric(
+              //             vertical: 8.0, horizontal: 10),
+              //         child: TextField(
+              //           decoration: InputDecoration(
+              //             labelText: 'Ulasan ${index + 1}',
+              //             border: OutlineInputBorder(),
+              //           ),
+              //         ),
+              //       );
+              //     },
+              //   ),
+              // ),
             ],
           ),
         ),
@@ -133,12 +133,14 @@ class ReviewView extends GetView<ReviewController> {
               onPressed: () {
                 Get.to(CreateReviewView()); // This should work fine
               },
-              child: const Icon(Icons.add),
               style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[100],
+                shadowColor: Colors.black,
                 shape: const CircleBorder(),
                 padding:
                     const EdgeInsets.all(20), // Adjust the size of the button
               ),
+              child: const Icon(Icons.add_location_rounded, color: Colors.black,),
             ),
           ),
         ));
