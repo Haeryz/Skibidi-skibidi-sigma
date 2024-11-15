@@ -25,8 +25,8 @@ class AuthenticationController extends GetxController {
       Get.snackbar('Success', 'Registration successful',
           backgroundColor: Colors.green);
 
-      // Navigate to profile
-      Get.offNamed(Routes.PROFILE);
+      // Navigate to HOME
+      Get.offNamed(Routes.HOME);
     } catch (error) {
       Get.snackbar('Error', 'Registration failed: $error',
           backgroundColor: Colors.red);
@@ -42,7 +42,7 @@ class AuthenticationController extends GetxController {
       await _saveLoginState(); // Save login state after successful login
       Get.snackbar('Success', 'Login successful',
           backgroundColor: Colors.green);
-      Get.toNamed(Routes.PROFILE);
+      Get.toNamed(Routes.HOME);
     } catch (error) {
       Get.snackbar('Error', 'Login failed: $error',
           backgroundColor: Colors.red);
@@ -110,7 +110,7 @@ class AuthenticationController extends GetxController {
     final isLoggedIn = prefs.getBool('is_logged_in') ?? false;
 
     if (isLoggedIn && _auth.currentUser != null) {
-      // Navigate to the home or profile screen if the user is still logged in
+      // Navigate to the home or HOME screen if the user is still logged in
       Get.offNamed(Routes.HOME);
     } else {
       // Navigate to the authentication screen

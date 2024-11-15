@@ -164,7 +164,7 @@ class AuthenticationView extends GetView<AuthenticationController> {
                       Get.snackbar('Sukses', 'Login Google sukses',
                           backgroundColor: Colors.green);
                       Get.toNamed(
-                          Routes.PROFILE); // Navigate to profile on success
+                          Routes.HOME); // Navigate to profile on success
                     } else {
                       Get.snackbar('Error', 'Login Google gagal',
                           backgroundColor: Colors.red);
