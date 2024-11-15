@@ -142,12 +142,11 @@ class AuthenticationView extends GetView<AuthenticationController> {
             ),
             const SizedBox(height: 20),
 
-            // Google Sign-In Button
             SizedBox(
               width: double.infinity,
               child: SignInButton(
                 Buttons.google,
-                text: 'Sign in menggunakan google',
+                text: 'Sign in menggunakan Google',
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
@@ -157,8 +156,9 @@ class AuthenticationView extends GetView<AuthenticationController> {
                 ),
                 onPressed: () async {
                   if (!controller.isLoading.value) {
-                    controller.isLoading.value = true; // Set loading state to true
-                    var userCredential = await controller.signInWithGoogle(); //automatically assign variable type
+                    controller.isLoading.value =
+                        true; // Set loading state to true
+                    var userCredential = await controller.signInWithGoogle();
 
                     if (userCredential != null) {
                       Get.snackbar('Sukses', 'Login Google sukses',

@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
 
-class ReelsController extends GetxController {
-  //TODO: Implement ReelsController
+class ReviewController extends GetxController {
+  //TODO: Implement ReviewController
 
   final count = 0.obs;
   @override

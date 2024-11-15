@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
-
 import 'package:get/get.dart';
-import 'package:skibidiskibidisigma/app/modules/navbar/views/navbar_view.dart';
-
-import '../controllers/akun_controller.dart';
-
+import 'package:skibidiskibidisigma/app/modules/akun/controllers/akun_controller.dart';
+import 'package:skibidiskibidisigma/app/modules/authentication/controllers/authentication_controller.dart';
 import 'package:skibidiskibidisigma/app/modules/authentication/views/authentication_view.dart';
+import 'package:skibidiskibidisigma/app/modules/navbar/views/navbar_view.dart';
 
 // ignore: camel_case_types
 class akunView extends GetView<akunController> {
   const akunView({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -23,6 +22,9 @@ class akunView extends GetView<akunController> {
 }
 
 class ProfilePage extends StatelessWidget {
+  // Access the AuthenticationController instance
+  final AuthenticationController _authController = Get.find<AuthenticationController>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +73,7 @@ class ProfilePage extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: 20.0),
             child: ElevatedButton(
               onPressed: () {
-                // Menampilkan dialog konfirmasi sebelum keluar
+                // Show confirmation dialog before logging out
                 showDialog(
                   context: context,
                   builder: (BuildContext context) {
@@ -81,14 +83,16 @@ class ProfilePage extends StatelessWidget {
                       actions: [
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop(); // Tutup dialog
+                            Navigator.of(context).pop(); // Close the dialog
                           },
                           child: const Text('Tidak'),
                         ),
                         TextButton(
                           onPressed: () {
-                            Navigator.of(context).pop(); // Tutup dialog
-                            // Navigasi ke halaman AuthenticationView
+                            Navigator.of(context).pop(); // Close the dialog
+                            // Call the logout method from the controller
+                            _authController.logout();
+                            // Navigate to AuthenticationView (login/signup page)
                             Get.to(() => AuthenticationView());
                           },
                           child: const Text('Ya'),
@@ -105,14 +109,15 @@ class ProfilePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20.0),
                   side: const BorderSide(color: Colors.black),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
               ),
               child: const Text('Keluar'),
             ),
-          )
+          ),
         ],
       ),
-      bottomNavigationBar: NavbarView(),
+      bottomNavigationBar: NavbarView(), // Add your Navbar here
     );
   }
 

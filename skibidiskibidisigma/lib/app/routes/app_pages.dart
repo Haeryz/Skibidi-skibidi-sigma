@@ -16,8 +16,8 @@ import '../modules/notification/bindings/notification_binding.dart';
 import '../modules/notification/views/notification_view.dart';
 import '../modules/plan/bindings/plan_binding.dart';
 import '../modules/plan/views/plan_view.dart';
-import '../modules/reels/bindings/reels_binding.dart';
-import '../modules/reels/views/reels_view.dart';
+import '../modules/review/bindings/review_binding.dart';
+import '../modules/review/views/review_view.dart';
 import '../modules/search/bindings/search_binding.dart';
 import '../modules/search/views/search_view.dart';
 import '../modules/splash_screen/views/splash_view.dart';
@@ -29,12 +29,13 @@ part 'app_routes.dart';
 class AppPages {
   AppPages._();
 
-  static const INITIAL = Routes.AUTHENTICATION;
+
+  static const INITIAL = Routes.SPLASH;
 
   static final routes = [
     GetPage(
       name: _Paths.SPLASH,
-      page: () => const SplashScreenView(),
+      page: () => SplashScreenView(),
     ),
     GetPage(
       name: _Paths.HOME,
@@ -87,9 +88,9 @@ class AppPages {
       binding: NavbarBinding(),
     ),
     GetPage(
-      name: _Paths.REELS,
-      page: () => const ReelsView(),
-      binding: ReelsBinding(),
+      name: _Paths.REVIEW,
+      page: () => const ReviewView(),
+      binding: ReviewBinding(),
     ),
   ];
 }

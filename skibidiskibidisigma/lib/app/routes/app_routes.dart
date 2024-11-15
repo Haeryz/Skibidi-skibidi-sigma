@@ -14,6 +14,7 @@ abstract class Routes {
   static const NOTIFICATION = _Paths.NOTIFICATION;
   static const NAVBAR = _Paths.NAVBAR;
   static const REELS = _Paths.REELS;
+  static const REVIEW = _Paths.REVIEW;
 }
 
 abstract class _Paths {
@@ -30,4 +31,5 @@ abstract class _Paths {
   static const NOTIFICATION = '/notification';
   static const NAVBAR = '/navbar';
   static const REELS = '/reels';
+  static const REVIEW = '/review';
 }

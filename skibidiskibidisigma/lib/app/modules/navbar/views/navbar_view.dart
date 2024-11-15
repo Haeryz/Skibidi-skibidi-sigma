@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
+
 
 import '../controllers/navbar_controller.dart';
 
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
-
-import '../controllers/navbar_controller.dart';
 
 class NavbarView extends GetView<NavbarController> {
   NavbarView({super.key});
