@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/navbar/views/navbar_view.dart';
+import 'package:skibidiskibidisigma/app/modules/review/views/create_reviewViews.dart';
 import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 
 import '../controllers/review_controller.dart';
@@ -129,7 +130,9 @@ class ReviewView extends GetView<ReviewController> {
           child: Align(
             alignment: Alignment.bottomRight,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Get.to(CreateReviewView()); // This should work fine
+              },
               child: const Icon(Icons.add),
               style: ElevatedButton.styleFrom(
                 shape: const CircleBorder(),
