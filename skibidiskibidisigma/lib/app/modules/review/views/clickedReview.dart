@@ -1,3 +1,5 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:video_player/video_player.dart';
@@ -48,9 +50,9 @@ class _ClickedreviewState extends State<Clickedreview> {
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
                 child: GridView.builder(
-                  physics: NeverScrollableScrollPhysics(), // Disable scroll
+                  physics: const NeverScrollableScrollPhysics(), // Disable scroll
                   shrinkWrap: true, // Limit the height of the grid view
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 3, // 3 items per row
                     crossAxisSpacing: 8.0,
                     mainAxisSpacing: 8.0,
@@ -63,7 +65,7 @@ class _ClickedreviewState extends State<Clickedreview> {
                     final mediaUrl = review['mediaUrls'][index];
 
                     // Debugging output for mediaUrl
-                    print('Media URL: $mediaUrl');
+                    // print('Media URL: $mediaUrl');
 
                     if (mediaUrl.contains('.mp4')) {
                       // Video Section

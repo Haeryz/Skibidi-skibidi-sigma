@@ -64,6 +64,7 @@ class ReviewController extends GetxController {
 
     if (isPhoto) {
       pickedFiles = await picker.pickMultiImage();
+      // ignore: unnecessary_null_comparison
       if (pickedFiles != null) {
         if (pickedFiles.length + mediaFiles.length <= 9) {
           for (var file in pickedFiles) {

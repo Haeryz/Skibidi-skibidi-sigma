@@ -12,7 +12,6 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     // Initialize controllers
     final ProfileController profileController = Get.find<ProfileController>();
-    final HomeController homeController = Get.put(HomeController());
 
     // State to track description expansion
     RxBool isExpanded = false.obs;
