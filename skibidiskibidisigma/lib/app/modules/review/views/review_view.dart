@@ -117,51 +117,51 @@ class ReviewView extends GetView<ReviewController> {
                     itemBuilder: (context, index) {
                       final review = reviewController.reviews[index];
                       return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 8.0, horizontal: 10),
-                        child: GestureDetector(
-                          onTap: () {
-                            Get.to(() =>
-                                Clickedreview()); // Navigate to the Clickedreview widget
-                          },
-                          child: Card(
-                            elevation: 4,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // Image section
-                                if (review['mediaUrls'] != null &&
-                                    (review['mediaUrls'] as List).isNotEmpty)
-                                  ClipRRect(
-                                    borderRadius: const BorderRadius.vertical(
-                                        top: Radius.circular(10)),
-                                    child: Image.network(
-                                      review['mediaUrls']
-                                          [0], // Display the first image
-                                      height: 200,
-                                      width: double.infinity,
-                                      fit: BoxFit.cover,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 8.0, horizontal: 10),
+                          child: GestureDetector(
+                            onTap: () {
+                              Get.to(() => Clickedreview(),
+                                  arguments:
+                                      review); // Pass review data to Clickedreview
+                            },
+                            child: Card(
+                              elevation: 4,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Image section
+                                  if (review['mediaUrls'] != null &&
+                                      (review['mediaUrls'] as List).isNotEmpty)
+                                    ClipRRect(
+                                      borderRadius: const BorderRadius.vertical(
+                                          top: Radius.circular(10)),
+                                      child: Image.network(
+                                        review['mediaUrls']
+                                            [0], // Display the first image
+                                        height: 200,
+                                        width: double.infinity,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  // Title section
+                                  Padding(
+                                    padding: const EdgeInsets.all(10.0),
+                                    child: Text(
+                                      review['title'] ?? "Untitled",
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
                                     ),
                                   ),
-                                // Title section
-                                Padding(
-                                  padding: const EdgeInsets.all(10.0),
-                                  child: Text(
-                                    review['title'] ?? "Untitled",
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
-                        ),
-                      );
+                          ));
                     },
                   );
                 }),
