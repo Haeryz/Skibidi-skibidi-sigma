@@ -89,7 +89,7 @@ class AppPages {
     ),
     GetPage(
       name: _Paths.REVIEW,
-      page: () => const ReviewView(),
+      page: () => ReviewView(),
       binding: ReviewBinding(),
     ),
   ];

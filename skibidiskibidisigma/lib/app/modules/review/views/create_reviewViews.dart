@@ -99,6 +99,29 @@ class CreateReviewView extends StatelessWidget {
 
             const SizedBox(height: 20),
 
+            TextField(
+              onChanged: (title) {
+                reviewController.updateReviewTitle(title);
+              },
+              decoration: InputDecoration(
+                hintText: 'Enter review title',
+                hintStyle: const TextStyle(color: Colors.grey),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.black),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: const BorderSide(color: Colors.black),
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
             // Review Text Field
             TextField(
               maxLines: 3,

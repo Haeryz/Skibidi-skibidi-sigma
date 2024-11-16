@@ -11,13 +11,37 @@ class ReviewController extends GetxController {
   // Reactive variable for selected stars
   final RxInt selectedStars = 0.obs;
   final RxString reviewText = ''.obs;
+  final RxString reviewTitle = ''.obs;
   final RxList<File> mediaFiles = <File>[].obs;
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
+  final RxList<Map<String, dynamic>> reviews = <Map<String, dynamic>>[].obs;
+
+  void fetchReviews() async {
+    try {
+      final querySnapshot = await firestore.collection('reviews').get();
+      reviews.value = querySnapshot.docs
+          .map((doc) => doc.data() as Map<String, dynamic>)
+          .toList();
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to fetch reviews: $e',
+          backgroundColor: Colors.red);
+    }
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    fetchReviews();
+  }
 
   // Method to update the selected stars
   void updateStars(int stars) {
     selectedStars.value = stars;
+  }
+
+  void updateReviewTitle(String title) {
+    reviewTitle.value = title;
   }
 
   void updateReviewText(String text) {
@@ -96,6 +120,9 @@ class ReviewController extends GetxController {
       if (selectedStars.value == 0) {
         throw 'Please select a star rating.';
       }
+      if (reviewTitle.isEmpty) {
+        throw 'Please enter a review title.';
+      }
       if (reviewText.isEmpty) {
         throw 'Please enter review text.';
       }
@@ -104,15 +131,19 @@ class ReviewController extends GetxController {
 
       await firestore.collection('reviews').add({
         'stars': selectedStars.value,
+        'title': reviewTitle.value,
         'text': reviewText.value,
         'mediaUrls': mediaUrls,
         'timestamp': FieldValue.serverTimestamp(),
       });
 
       selectedStars.value = 0;
+      reviewTitle.value = '';
       reviewText.value = '';
       mediaUrls.clear();
       mediaFiles.clear();
+
+      fetchReviews();
 
       Get.snackbar('Success', 'Review anda telah diterima sistem',
           backgroundColor: Colors.green);

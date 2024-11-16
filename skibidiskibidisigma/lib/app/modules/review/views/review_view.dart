@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/navbar/views/navbar_view.dart';
+import 'package:skibidiskibidisigma/app/modules/review/views/clickedReview.dart';
 import 'package:skibidiskibidisigma/app/modules/review/views/create_reviewViews.dart';
 import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 
 import '../controllers/review_controller.dart';
 
 class ReviewView extends GetView<ReviewController> {
-  const ReviewView({super.key});
+  ReviewView({super.key});
+
+  final ReviewController reviewController = Get.find<ReviewController>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,23 +106,66 @@ class ReviewView extends GetView<ReviewController> {
               const SizedBox(
                 height: 20,
               ),
-              // Expanded(
-              //   child: ListView.builder(
-              //     itemCount: 15, // 15 TextFields
-              //     itemBuilder: (context, index) {
-              //       return Padding(
-              //         padding: const EdgeInsets.symmetric(
-              //             vertical: 8.0, horizontal: 10),
-              //         child: TextField(
-              //           decoration: InputDecoration(
-              //             labelText: 'Ulasan ${index + 1}',
-              //             border: OutlineInputBorder(),
-              //           ),
-              //         ),
-              //       );
-              //     },
-              //   ),
-              // ),
+              Expanded(
+                child: Obx(() {
+                  if (reviewController.reviews.isEmpty) {
+                    return const Center(child: Text("No reviews available."));
+                  }
+
+                  return ListView.builder(
+                    itemCount: reviewController.reviews.length,
+                    itemBuilder: (context, index) {
+                      final review = reviewController.reviews[index];
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 8.0, horizontal: 10),
+                        child: GestureDetector(
+                          onTap: () {
+                            Get.to(() =>
+                                Clickedreview()); // Navigate to the Clickedreview widget
+                          },
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // Image section
+                                if (review['mediaUrls'] != null &&
+                                    (review['mediaUrls'] as List).isNotEmpty)
+                                  ClipRRect(
+                                    borderRadius: const BorderRadius.vertical(
+                                        top: Radius.circular(10)),
+                                    child: Image.network(
+                                      review['mediaUrls']
+                                          [0], // Display the first image
+                                      height: 200,
+                                      width: double.infinity,
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                // Title section
+                                Padding(
+                                  padding: const EdgeInsets.all(10.0),
+                                  child: Text(
+                                    review['title'] ?? "Untitled",
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                }),
+              ),
             ],
           ),
         ),
@@ -140,7 +186,10 @@ class ReviewView extends GetView<ReviewController> {
                 padding:
                     const EdgeInsets.all(20), // Adjust the size of the button
               ),
-              child: const Icon(Icons.add_location_rounded, color: Colors.black,),
+              child: const Icon(
+                Icons.add_location_rounded,
+                color: Colors.black,
+              ),
             ),
           ),
         ));
