@@ -25,7 +25,8 @@ class CreateReviewView extends StatelessWidget {
         ),
         centerTitle: true,
       ),
-      body: SingleChildScrollView(  // Wrap this in SingleChildScrollView
+      body: SingleChildScrollView(
+        // Wrap this in SingleChildScrollView
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -120,8 +121,10 @@ class CreateReviewView extends StatelessWidget {
                   onPressed: () {
                     reviewController.pickMedia(true); // Pick photo
                   },
-                  icon: const Icon(Icons.add_photo_alternate, color: Colors.black),
-                  label: const Text("Add photo", style: TextStyle(color: Colors.black)),
+                  icon: const Icon(Icons.add_photo_alternate,
+                      color: Colors.black),
+                  label: const Text("Add photo",
+                      style: TextStyle(color: Colors.black)),
                 ),
                 const SizedBox(width: 60),
                 OutlinedButton.icon(
@@ -129,7 +132,8 @@ class CreateReviewView extends StatelessWidget {
                     reviewController.pickMedia(false); // Pick video
                   },
                   icon: const Icon(Icons.video_library, color: Colors.black),
-                  label: const Text("Add video", style: TextStyle(color: Colors.black)),
+                  label: const Text("Add video",
+                      style: TextStyle(color: Colors.black)),
                 ),
               ],
             ),
@@ -141,26 +145,55 @@ class CreateReviewView extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(vertical: 16.0),
                   child: GridView.builder(
                     shrinkWrap: true,
-                    physics: NeverScrollableScrollPhysics(),
-                    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 3, // 3 images in a row
                       crossAxisSpacing: 8.0,
                       mainAxisSpacing: 8.0,
                     ),
                     itemCount: reviewController.mediaFiles.length,
                     itemBuilder: (context, index) {
-                      return ClipRRect(
-                        borderRadius: BorderRadius.circular(8.0),
-                        child: Image.file(
-                          reviewController.mediaFiles[index],
-                          fit: BoxFit.cover,
-                        ),
+                      return Stack(
+                        children: [
+                          // Image Preview
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.file(
+                              reviewController.mediaFiles[index],
+                              fit: BoxFit.cover,
+                              width: double.infinity,
+                              height: double.infinity,
+                            ),
+                          ),
+                          // Remove Button
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: GestureDetector(
+                              onTap: () {
+                                reviewController.mediaFiles.removeAt(index);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.6),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       );
                     },
                   ),
                 );
               } else {
-                return Container(); // Empty container if no image is selected
+                return Container(); // Empty container if no media is selected
               }
             }),
 
