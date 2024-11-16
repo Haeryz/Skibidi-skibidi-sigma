@@ -1,10 +1,8 @@
-import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/Profile/controllers/profile_controller.dart';
 import 'package:skibidiskibidisigma/app/modules/review/controllers/review_controller.dart';
-import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:video_player/video_player.dart';
 
 class CreateReviewView extends StatelessWidget {
   final ReviewController reviewController = Get.find<ReviewController>();
@@ -176,90 +174,103 @@ class CreateReviewView extends StatelessWidget {
             ),
 
             // Image Preview Section (3x3 Grid)
-Obx(() {
-  if (reviewController.mediaFiles.isNotEmpty) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 16.0),
-      child: GridView.builder(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, // 3 items in a row
-          crossAxisSpacing: 8.0,
-          mainAxisSpacing: 8.0,
-        ),
-        itemCount: reviewController.mediaFiles.length,
-        itemBuilder: (context, index) {
-          final file = reviewController.mediaFiles[index];
-          final isVideo = file.path.endsWith('.mp4');
-
-          return FutureBuilder<Uint8List?>(
-            future: isVideo
-                ? VideoThumbnail.thumbnailData(
-                    video: file.path,
-                    imageFormat: ImageFormat.JPEG,
-                    maxWidth: 128, // specify thumbnail width
-                    quality: 75,
-                  )
-                : Future.value(null),
-            builder: (context, snapshot) {
-              final thumbnail = snapshot.data;
-
-              return Stack(
-                children: [
-                  // Thumbnail or Image Preview
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(8.0),
-                    child: isVideo
-                        ? (thumbnail != null
-                            ? Image.memory(
-                                thumbnail,
-                                fit: BoxFit.cover,
-                                width: double.infinity,
-                                height: double.infinity,
-                              )
-                            : Center(
-                                child: CircularProgressIndicator(),
-                              ))
-                        : Image.file(
-                            file,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
-                            height: double.infinity,
-                          ),
-                  ),
-                  // Remove Button
-                  Positioned(
-                    top: 4,
-                    right: 4,
-                    child: GestureDetector(
-                      onTap: () {
-                        reviewController.mediaFiles.removeAt(index);
-                      },
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.6),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.white,
-                          size: 20,
-                        ),
-                      ),
+            Obx(() {
+              if (reviewController.mediaFiles.isNotEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 16.0),
+                  child: GridView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 8.0,
+                      mainAxisSpacing: 8.0,
                     ),
+                    itemCount: reviewController.mediaFiles.length,
+                    itemBuilder: (context, index) {
+                      final file = reviewController.mediaFiles[index];
+                      final isVideo = file.path.endsWith('.mp4');
+
+                      return Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: isVideo
+                                ? FutureBuilder<VideoPlayerController>(
+                                    future: (() async {
+                                      await reviewController
+                                          .initializeVideoController(file);
+                                      return reviewController
+                                          .videoControllers[file]!;
+                                    })(),
+                                    builder: (context, snapshot) {
+                                      if (snapshot.connectionState ==
+                                          ConnectionState.done) {
+                                        final controller = snapshot.data!;
+                                        return GestureDetector(
+                                          onTap: () {
+                                            if (controller.value.isPlaying) {
+                                              controller.pause();
+                                            } else {
+                                              controller.play();
+                                            }
+                                          },
+                                          child: AspectRatio(
+                                            aspectRatio:
+                                                controller.value.aspectRatio,
+                                            child: VideoPlayer(controller),
+                                          ),
+                                        );
+                                      } else {
+                                        return const Center(
+                                          child: CircularProgressIndicator(),
+                                        );
+                                      }
+                                    },
+                                  )
+                                : Image.file(
+                                    file,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  ),
+                          ),
+                          Positioned(
+                            top: 4,
+                            right: 4,
+                            child: GestureDetector(
+                              onTap: () {
+                                if (isVideo) {
+                                  reviewController.videoControllers[file]
+                                      ?.dispose();
+                                  reviewController.videoControllers
+                                      .remove(file);
+                                }
+                                reviewController.mediaFiles.removeAt(index);
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black.withOpacity(0.6),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 20,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
-                ],
-              );
-            },
-          );
-        },
-      ),
-    );
-  } else {
-    return Container(); // Empty container if no media is selected
-  }
-}),
+                );
+              } else {
+                return Container();
+              }
+            }),
 
             // Post Button
             OutlinedButton.icon(

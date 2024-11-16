@@ -5,7 +5,9 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mime/mime.dart';
 import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
+import 'package:video_player/video_player.dart';
 
 class ReviewController extends GetxController {
   // Reactive variable for selected stars
@@ -16,16 +18,24 @@ class ReviewController extends GetxController {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final FirebaseStorage firebaseStorage = FirebaseStorage.instance;
   final RxList<Map<String, dynamic>> reviews = <Map<String, dynamic>>[].obs;
+  final RxMap<File, VideoPlayerController> videoControllers =
+      <File, VideoPlayerController>{}.obs;
 
   void fetchReviews() async {
     try {
       final querySnapshot = await firestore.collection('reviews').get();
-      reviews.value = querySnapshot.docs
-          .map((doc) => doc.data())
-          .toList();
+      reviews.value = querySnapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch reviews: $e',
           backgroundColor: Colors.red);
+    }
+  }
+
+  Future<void> initializeVideoController(File videoFile) async {
+    if (!videoControllers.containsKey(videoFile)) {
+      final controller = VideoPlayerController.file(videoFile);
+      await controller.initialize();
+      videoControllers[videoFile] = controller;
     }
   }
 
@@ -53,66 +63,73 @@ class ReviewController extends GetxController {
     List<XFile>? pickedFiles;
 
     if (isPhoto) {
-      // Picking multiple images if isPhoto is true
       pickedFiles = await picker.pickMultiImage();
-      if (pickedFiles.length +
-                  mediaFiles
-                      .where((file) =>
-                          file.path.endsWith('.jpg') ||
-                          file.path.endsWith('.png'))
-                      .length <=
-              9) {
-        // Adding the selected images to mediaFiles if total doesn't exceed 9
-        for (var file in pickedFiles) {
-          mediaFiles.add(File(file.path));
+      if (pickedFiles != null) {
+        if (pickedFiles.length + mediaFiles.length <= 9) {
+          for (var file in pickedFiles) {
+            mediaFiles.add(File(file.path));
+          }
+        } else {
+          Get.snackbar('Limit Reached', 'You can only add up to 9 items.');
         }
-      } else {
-        Get.snackbar('Limit Reached', 'You can only add up to 9 photos.');
       }
     } else {
-      // Picking a single video if isPhoto is false
       XFile? pickedFile = await picker.pickVideo(source: ImageSource.gallery);
-      if (pickedFile != null &&
-          mediaFiles.where((file) => file.path.endsWith('.mp4')).length < 9) {
-        mediaFiles.add(File(pickedFile.path));
+      if (pickedFile != null && mediaFiles.length < 9) {
+        final videoFile = File(pickedFile.path);
+        mediaFiles.add(videoFile);
+        await initializeVideoController(videoFile);
       } else {
-        Get.snackbar('Limit Reached', 'You can only add up to 9 videos.');
+        Get.snackbar('Limit Reached', 'You can only add up to 9 items.');
       }
     }
+  }
 
-    // Ensure the total count of images and videos is not exceeding 9 for each type
-    if (mediaFiles
-            .where((file) =>
-                file.path.endsWith('.jpg') || file.path.endsWith('.png'))
-            .length >
-        9) {
-      mediaFiles.removeWhere(
-          (file) => file.path.endsWith('.jpg') || file.path.endsWith('.png'));
-      Get.snackbar('Limit Reached', 'You can only add up to 9 photos.');
+Future<List<String>> _uploadMedia() async {
+  List<String> mediaUrls = [];
+  List<File> imageFiles = [];
+  List<File> videoFiles = [];
+
+  // Separate image and video files based on MIME type
+  for (var file in mediaFiles) {
+    final mimeType = lookupMimeType(file.path);
+
+    // Check if the file is an image
+    if (mimeType != null && mimeType.startsWith('image/')) {
+      imageFiles.add(file);
     }
-    if (mediaFiles.where((file) => file.path.endsWith('.mp4')).length > 9) {
-      mediaFiles.removeWhere((file) => file.path.endsWith('.mp4'));
-      Get.snackbar('Limit Reached', 'You can only add up to 9 videos.');
+    // Check if the file is a video
+    else if (mimeType != null && mimeType.startsWith('video/')) {
+      videoFiles.add(file);
     }
   }
 
-  Future<List<String>> _uploadMedia() async {
-    List<String> mediaUrls = [];
+  // Upload image files
+  for (var file in imageFiles) {
+    final String fileName = file.path.split('/').last;
+    final Reference storageRef = firebaseStorage.ref().child('reviews/images/$fileName');
 
-    for (var file in mediaFiles) {
-      final String fileName = file.path.split('/').last;
-      final Reference storageRef =
-          firebaseStorage.ref().child('reviews/$fileName');
+    final UploadTask uploadTask = storageRef.putFile(file);
+    final TaskSnapshot snapshot = await uploadTask;
 
-      final UploadTask uploadTask = storageRef.putFile(file);
-      final TaskSnapshot snapshot = await uploadTask;
-
-      final String downloadUrl = await snapshot.ref.getDownloadURL();
-      mediaUrls.add(downloadUrl);
-    }
-
-    return mediaUrls;
+    final String downloadUrl = await snapshot.ref.getDownloadURL();
+    mediaUrls.add(downloadUrl);
   }
+
+  // Upload video files
+  for (var file in videoFiles) {
+    final String fileName = file.path.split('/').last;
+    final Reference storageRef = firebaseStorage.ref().child('reviews/videos/$fileName');
+
+    final UploadTask uploadTask = storageRef.putFile(file);
+    final TaskSnapshot snapshot = await uploadTask;
+
+    final String downloadUrl = await snapshot.ref.getDownloadURL();
+    mediaUrls.add(downloadUrl);
+  }
+
+  return mediaUrls;
+}
 
   Future<void> postReview() async {
     try {
