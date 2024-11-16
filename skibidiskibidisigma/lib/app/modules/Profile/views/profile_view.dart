@@ -11,7 +11,7 @@ class ProfileView extends GetView<ProfileController> {
   Widget build(BuildContext context) {
     // Use Get.put() to instantiate the controller
     final ProfileController profileController = Get.find<ProfileController>();
-    final AuthenticationController _authController =
+    final AuthenticationController authController =
         Get.find<AuthenticationController>();
 
     return Scaffold(
@@ -167,7 +167,7 @@ class ProfileView extends GetView<ProfileController> {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  _authController
+                  authController
                       .logout(); // call the logout function from the controller
                 },
                 style: ElevatedButton.styleFrom(

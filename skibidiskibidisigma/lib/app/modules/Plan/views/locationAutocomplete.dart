@@ -4,7 +4,7 @@ import 'package:skibidiskibidisigma/app/modules/plan/views/locationService.dart'
 class LocationAutocomplete extends StatefulWidget {
   final TextEditingController controller;
 
-  LocationAutocomplete({required this.controller});
+  const LocationAutocomplete({required this.controller});
 
   @override
   _LocationAutocompleteState createState() => _LocationAutocompleteState();
@@ -42,12 +42,12 @@ void _onChanged(String value) async {
       children: [
         TextField(
           controller: widget.controller,
-          decoration: InputDecoration(labelText: 'Location'),
+          decoration: const InputDecoration(labelText: 'Location'),
           onChanged: _onChanged,
-          style: TextStyle(fontSize: 18.0),
+          style: const TextStyle(fontSize: 18.0),
         ),
         if (_suggestions.isNotEmpty)
-          Container(
+          SizedBox(
             height: 200, // Set a height for the suggestions list
             child: ListView.builder(
               itemCount: _suggestions.length,

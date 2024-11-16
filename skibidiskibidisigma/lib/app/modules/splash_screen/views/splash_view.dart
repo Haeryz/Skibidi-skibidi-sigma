@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/splash_screen/controllers/spash_controller.dart';
-import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 
 class SplashScreenView extends StatelessWidget {
   SplashScreenView({super.key});

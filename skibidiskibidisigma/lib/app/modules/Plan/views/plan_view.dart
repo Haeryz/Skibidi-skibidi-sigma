@@ -67,7 +67,7 @@ class PlanView extends GetView<PlanController> {
 
   Widget _buildWidgetListTodo(
       double widthScreen, double heightScreen, BuildContext context) {
-    return Container(
+    return SizedBox(
       width: widthScreen,
       height: heightScreen,
       child: Column(

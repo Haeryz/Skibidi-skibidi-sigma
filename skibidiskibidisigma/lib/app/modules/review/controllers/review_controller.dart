@@ -21,7 +21,7 @@ class ReviewController extends GetxController {
     try {
       final querySnapshot = await firestore.collection('reviews').get();
       reviews.value = querySnapshot.docs
-          .map((doc) => doc.data() as Map<String, dynamic>)
+          .map((doc) => doc.data())
           .toList();
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch reviews: $e',
@@ -55,8 +55,7 @@ class ReviewController extends GetxController {
     if (isPhoto) {
       // Picking multiple images if isPhoto is true
       pickedFiles = await picker.pickMultiImage();
-      if (pickedFiles != null &&
-          pickedFiles.length +
+      if (pickedFiles.length +
                   mediaFiles
                       .where((file) =>
                           file.path.endsWith('.jpg') ||
