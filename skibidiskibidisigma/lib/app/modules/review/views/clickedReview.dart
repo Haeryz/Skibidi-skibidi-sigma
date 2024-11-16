@@ -32,7 +32,7 @@ class Clickedreview extends StatelessWidget {
                         aspectRatio: 16 / 9, // Adjust the aspect ratio
                         child: Container(
                           color: Colors.black26, // Video thumbnail background
-                          child: Center(
+                          child: const Center(
                             child: Icon(
                               Icons.play_arrow,
                               color: Colors.white,
@@ -73,7 +73,7 @@ class Clickedreview extends StatelessWidget {
             // Review Rating Section
             Row(
               children: List.generate(review['stars'], (index) {
-                return Icon(
+                return const Icon(
                   Icons.star,
                   color: Colors.amber,
                   size: 20,
