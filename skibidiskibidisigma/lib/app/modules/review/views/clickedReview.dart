@@ -23,6 +23,8 @@ class _ClickedreviewState extends State<Clickedreview> {
     if (!_videoControllers.containsKey(url)) {
       final controller = VideoPlayerController.networkUrl(Uri.parse(url));
       await controller.initialize();
+      controller.setLooping(true); // Set the video to loop
+      controller.play(); // Start playing the video automatically
       _videoControllers[url] = controller;
     }
   }
@@ -43,82 +45,90 @@ class _ClickedreviewState extends State<Clickedreview> {
             // Media Section
             if (review['mediaUrls'] != null &&
                 (review['mediaUrls'] as List).isNotEmpty)
-              ...List.generate(review['mediaUrls'].length, (index) {
-                final mediaUrl = review['mediaUrls'][index];
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: GridView.builder(
+                  physics: NeverScrollableScrollPhysics(), // Disable scroll
+                  shrinkWrap: true, // Limit the height of the grid view
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3, // 3 items per row
+                    crossAxisSpacing: 8.0,
+                    mainAxisSpacing: 8.0,
+                    childAspectRatio: 1.0, // Square aspect ratio for each cell
+                  ),
+                  itemCount: review['mediaUrls'].length > 9
+                      ? 9
+                      : review['mediaUrls'].length, // Limit to 9 items
+                  itemBuilder: (context, index) {
+                    final mediaUrl = review['mediaUrls'][index];
 
-                // Debugging output for mediaUrl
-                print('Media URL: $mediaUrl');
+                    // Debugging output for mediaUrl
+                    print('Media URL: $mediaUrl');
 
-                if (mediaUrl.contains('.mp4')) {
-                  // Video Section
-                  return FutureBuilder(
-                    future: _initializeVideoController(mediaUrl),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.done) {
-                        final controller = _videoControllers[mediaUrl]!;
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: AspectRatio(
-                            aspectRatio: controller.value.aspectRatio,
-                            child: Stack(
-                              children: [
-                                VideoPlayer(controller),
-                                Center(
-                                  child: IconButton(
-                                    icon: Icon(
-                                      controller.value.isPlaying
-                                          ? Icons.pause
-                                          : Icons.play_arrow,
-                                      color: Colors.white,
-                                      size: 50,
-                                    ),
-                                    onPressed: () {
-                                      setState(() {
-                                        controller.value.isPlaying
-                                            ? controller.pause()
-                                            : controller.play();
-                                      });
-                                    },
-                                  ),
+                    if (mediaUrl.contains('.mp4')) {
+                      // Video Section
+                      return FutureBuilder(
+                        future: _initializeVideoController(mediaUrl),
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState == ConnectionState.done) {
+                            final controller = _videoControllers[mediaUrl]!;
+                            return GestureDetector(
+                              onTap: () {
+                                // Navigate to FullScreenVideoPage on tap
+                                Get.to(
+                                  FullScreenVideoPage(videoUrl: mediaUrl),
+                                );
+                              },
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: AspectRatio(
+                                  aspectRatio: controller.value.aspectRatio,
+                                  child: VideoPlayer(controller),
                                 ),
-                              ],
-                            ),
-                          ),
-                        );
-                      } else {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(vertical: 8.0),
-                          child: Center(
-                            child: CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                    },
-                  );
-                } else if (mediaUrl.contains('.jpg') ||
-                    mediaUrl.contains('.png') ||
-                    mediaUrl.contains('.jpeg')) {
-                  // Image Section (only process images)
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(10),
-                      child: Image.network(
-                        mediaUrl,
-                        height: 200,
-                        width: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
-                  );
-                } else {
-                  // Fallback if media is neither image nor video
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: Text('Unsupported media type: $mediaUrl'),
-                  );
-                }
-              }),
+                              ),
+                            );
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      );
+                    } else if (mediaUrl.contains('.jpg') ||
+                        mediaUrl.contains('.png') ||
+                        mediaUrl.contains('.jpeg')) {
+                      // Image Section
+                      return ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Image.network(
+                          mediaUrl,
+                          fit: BoxFit.cover,
+                          loadingBuilder: (BuildContext context, Widget child,
+                              ImageChunkEvent? loadingProgress) {
+                            if (loadingProgress == null) {
+                              return child;
+                            } else {
+                              return Center(
+                                child: CircularProgressIndicator(
+                                  value: loadingProgress.expectedTotalBytes != null
+                                      ? loadingProgress.cumulativeBytesLoaded /
+                                          (loadingProgress.expectedTotalBytes ?? 1)
+                                      : null,
+                                ),
+                              );
+                            }
+                          },
+                        ),
+                      );
+                    } else {
+                      // Fallback if media is neither image nor video
+                      return Center(
+                        child: Text('Unsupported media type: $mediaUrl'),
+                      );
+                    }
+                  },
+                ),
+              ),
             // Review Title
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -151,6 +161,60 @@ class _ClickedreviewState extends State<Clickedreview> {
             ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class FullScreenVideoPage extends StatefulWidget {
+  final String videoUrl;
+
+  const FullScreenVideoPage({required this.videoUrl});
+
+  @override
+  _FullScreenVideoPageState createState() => _FullScreenVideoPageState();
+}
+
+class _FullScreenVideoPageState extends State<FullScreenVideoPage> {
+  late VideoPlayerController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = VideoPlayerController.networkUrl(Uri.parse(widget.videoUrl))
+      ..initialize().then((_) {
+        setState(() {});
+      })
+      ..setLooping(true)
+      ..play();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () {
+            Get.back(); // Close the full-screen video page
+          },
+        ),
+      ),
+      body: Center(
+        child: _controller.value.isInitialized
+            ? AspectRatio(
+                aspectRatio: _controller.value.aspectRatio,
+                child: VideoPlayer(_controller),
+              )
+            : const CircularProgressIndicator(),
       ),
     );
   }
