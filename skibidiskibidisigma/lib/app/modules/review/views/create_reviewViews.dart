@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:skibidiskibidisigma/app/modules/Profile/controllers/profile_controller.dart';
 import 'package:skibidiskibidisigma/app/modules/review/controllers/review_controller.dart';
-import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 
 class CreateReviewView extends StatelessWidget {
   final ReviewController reviewController = Get.find<ReviewController>();
+  final ProfileController profileController = Get.find<ProfileController>();
 
   @override
   Widget build(BuildContext context) {
@@ -32,18 +33,27 @@ class CreateReviewView extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             // Profile Section
-            const Row(
+
+            Row(
               children: [
-                CircleAvatar(
-                  radius: 25,
-                  backgroundImage: AssetImage('assets/profile_image.png'),
-                ),
-                SizedBox(width: 10),
-                Column(
+                Obx(() => CircleAvatar(
+                      radius: 25,
+                      backgroundImage:
+                          profileController.profileImage.value != null
+                              ? FileImage(profileController.profileImage.value!)
+                              : profileController.profileImageUrl.value != null
+                                  ? NetworkImage(
+                                      profileController.profileImageUrl.value!)
+                                  : const AssetImage(
+                                          'assets/icon/pfp_placeholder.png')
+                                      as ImageProvider,
+                    )),
+                const SizedBox(width: 10),
+                const Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Furina Lover',
+                      'Furina Lover', // Replace with dynamic user name if needed
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                     Text(
@@ -54,6 +64,7 @@ class CreateReviewView extends StatelessWidget {
                 ),
               ],
             ),
+
             const SizedBox(height: 20),
 
             // Star Rating Section

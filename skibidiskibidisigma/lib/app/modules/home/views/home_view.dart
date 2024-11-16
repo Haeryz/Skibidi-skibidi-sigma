@@ -11,7 +11,7 @@ class HomeView extends GetView<HomeController> {
   @override
   Widget build(BuildContext context) {
     // Initialize controllers
-    final ProfileController profileController = Get.put(ProfileController());
+    final ProfileController profileController = Get.find<ProfileController>();
     final HomeController homeController = Get.put(HomeController());
 
     // State to track description expansion
@@ -39,9 +39,14 @@ class HomeView extends GetView<HomeController> {
               },
               child: Obx(() => CircleAvatar(
                     radius: 20,
-                    backgroundImage: profileController.profileImage.value != null
-                        ? FileImage(profileController.profileImage.value!)
-                        : const AssetImage('assets/icon/sigma.png'),
+                    backgroundImage:
+                        profileController.profileImage.value != null
+                            ? FileImage(profileController.profileImage.value!)
+                            : profileController.profileImageUrl.value != null
+                                ? NetworkImage(
+                                    profileController.profileImageUrl.value!)
+                                : const AssetImage('assets/icon/sigma.png')
+                                    as ImageProvider,
                   )),
             ),
           ],
@@ -68,7 +73,8 @@ class HomeView extends GetView<HomeController> {
                     children: [
                       GestureDetector(
                         onTap: () {
-                          Get.toNamed(Routes.WIKIPEDIA); // Change PLAN to the desired page
+                          Get.toNamed(Routes
+                              .WIKIPEDIA); // Change PLAN to the desired page
                         },
                         child: SizedBox(
                           width: 150,
@@ -130,8 +136,10 @@ class HomeView extends GetView<HomeController> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Get.toNamed(Routes.WIKIPEDIA); // Change PLAN to the desired page
-                          Get.toNamed(Routes.PLAN); // Change PLAN to the desired page
+                          Get.toNamed(Routes
+                              .WIKIPEDIA); // Change PLAN to the desired page
+                          Get.toNamed(
+                              Routes.PLAN); // Change PLAN to the desired page
                         },
                         child: SizedBox(
                           width: 150,
@@ -196,12 +204,6 @@ class HomeView extends GetView<HomeController> {
                 ],
               ),
             ),
-            ElevatedButton(
-              onPressed: () {
-                homeController.showNotification();
-              },
-              child: const Text('Click me'),
-            ),
           ],
         ),
       ),
@@ -209,6 +211,3 @@ class HomeView extends GetView<HomeController> {
     );
   }
 }
-
-
-

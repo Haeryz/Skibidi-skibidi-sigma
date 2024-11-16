@@ -10,7 +10,7 @@ class ProfileView extends GetView<ProfileController> {
   @override
   Widget build(BuildContext context) {
     // Use Get.put() to instantiate the controller
-    final ProfileController profileController = Get.put(ProfileController());
+    final ProfileController profileController = Get.find<ProfileController>();
     final AuthenticationController _authController =
         Get.find<AuthenticationController>();
 
