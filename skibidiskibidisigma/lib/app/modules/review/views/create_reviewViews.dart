@@ -150,28 +150,26 @@ class CreateReviewView extends StatelessWidget {
             const SizedBox(height: 20),
 
             // Media Picker Section
-            Row(
-              children: [
-                OutlinedButton.icon(
-                  onPressed: () {
-                    reviewController.pickMedia(true); // Pick photo
-                  },
-                  icon: const Icon(Icons.add_photo_alternate,
-                      color: Colors.black),
-                  label: const Text("Add photo",
-                      style: TextStyle(color: Colors.black)),
-                ),
-                const SizedBox(width: 60),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    reviewController.pickMedia(false); // Pick video
-                  },
-                  icon: const Icon(Icons.video_library, color: Colors.black),
-                  label: const Text("Add video",
-                      style: TextStyle(color: Colors.black)),
-                ),
-              ],
-            ),
+Row(
+  children: [
+    OutlinedButton.icon(
+      onPressed: () {
+        reviewController.showMediaPicker(true); // For photo
+      },
+      icon: const Icon(Icons.add_photo_alternate, color: Colors.black),
+      label: const Text("Add photo", style: TextStyle(color: Colors.black)),
+    ),
+    const SizedBox(width: 60),
+    OutlinedButton.icon(
+      onPressed: () {
+        reviewController.showMediaPicker(false); // For video
+      },
+      icon: const Icon(Icons.video_library, color: Colors.black),
+      label: const Text("Add video", style: TextStyle(color: Colors.black)),
+    ),
+  ],
+),
+
 
             // Image Preview Section (3x3 Grid)
             Obx(() {

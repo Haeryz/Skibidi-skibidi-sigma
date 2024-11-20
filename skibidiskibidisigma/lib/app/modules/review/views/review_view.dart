@@ -1,6 +1,8 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:skibidiskibidisigma/app/modules/navbar/views/navbar_view.dart';
 import 'package:skibidiskibidisigma/app/modules/review/views/clickedReview.dart';
 import 'package:skibidiskibidisigma/app/modules/review/views/create_reviewViews.dart';
@@ -107,65 +109,86 @@ class ReviewView extends GetView<ReviewController> {
                 height: 20,
               ),
               Expanded(
-                child: Obx(() {
-                  if (reviewController.reviews.isEmpty) {
-                    return const Center(child: Text("No reviews available."));
-                  }
+  child: Obx(() {
+    if (reviewController.reviews.isEmpty) {
+      return const Center(child: Text("No reviews available."));
+    }
 
-                  return ListView.builder(
-                    itemCount: reviewController.reviews.length,
-                    itemBuilder: (context, index) {
-                      final review = reviewController.reviews[index];
-                      return Padding(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 10),
-                          child: GestureDetector(                                            
-                            onTap: () {
-                              Get.to(() => Clickedreview(),
-                                  arguments:
-                                      review); // Pass review data to Clickedreview
-                            },
-                            child: Card(
-                              elevation: 4,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  // Image section
-                                  if (review['mediaUrls'] != null &&
-                                      (review['mediaUrls'] as List).isNotEmpty)
-                                    ClipRRect(
-                                      borderRadius: const BorderRadius.vertical(
-                                          top: Radius.circular(10)),
-                                      child: Image.network(
-                                        review['mediaUrls']
-                                            [0], // Display the first image
-                                        height: 200,
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                      ),
-                                    ),
-                                  // Title section
-                                  Padding(
-                                    padding: const EdgeInsets.all(10.0),
-                                    child: Text(
-                                      review['title'] ?? "Untitled",
-                                      style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ));
-                    },
-                  );
-                }),
+    return ListView.builder(
+      itemCount: reviewController.reviews.length,
+      itemBuilder: (context, index) {
+        final review = reviewController.reviews[index];
+        final timestamp = review['timestamp'] as Timestamp?;
+        final date = timestamp != null
+            ? DateTime.fromMillisecondsSinceEpoch(timestamp.millisecondsSinceEpoch)
+            : null;
+
+        // Format the date with detailed time
+        final formattedDate = date != null
+            ? DateFormat('dd/MM/yyyy HH:mm:ss').format(date)
+            : "Unknown Date";
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+          child: GestureDetector(
+            onTap: () {
+              Get.to(() => Clickedreview(),
+                  arguments: review); // Pass review data to Clickedreview
+            },
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
               ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Image section
+                  if (review['mediaUrls'] != null &&
+                      (review['mediaUrls'] as List).isNotEmpty)
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(
+                          top: Radius.circular(10)),
+                      child: Image.network(
+                        review['mediaUrls'][0], // Display the first image
+                        height: 200,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  // Title and Date section
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          review['title'] ?? "Untitled",
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        if (formattedDate != null)
+                          Text(
+                            formattedDate,
+                            style: const TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey,
+                            ),
+                          ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }),
+)
             ],
           ),
         ),
