@@ -20,14 +20,18 @@ class ReviewController extends GetxController {
   final RxList<Map<String, dynamic>> reviews = <Map<String, dynamic>>[].obs;
   final RxMap<File, VideoPlayerController> videoControllers =
       <File, VideoPlayerController>{}.obs;
+  var isLoading = true.obs; // Track loading state
 
-  void fetchReviews() async {
+void fetchReviews() async {
+    isLoading(true); // Set loading state to true
     try {
       final querySnapshot = await firestore.collection('reviews').get();
       reviews.value = querySnapshot.docs.map((doc) => doc.data()).toList();
     } catch (e) {
       Get.snackbar('Error', 'Failed to fetch reviews: $e',
           backgroundColor: Colors.red);
+    } finally {
+      isLoading(false); // Set loading state to false after fetching
     }
   }
 
