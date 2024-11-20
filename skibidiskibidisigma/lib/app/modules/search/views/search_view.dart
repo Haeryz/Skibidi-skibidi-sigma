@@ -72,6 +72,7 @@ class SearchView extends GetView<local.SearchController> {
                           const SizedBox(height: 10),
                           ElevatedButton(
                             onPressed: () {
+                              // Existing method will now play sound automatically
                               controller.toggleLocation();
                               print("User toggled location.");
                             },
