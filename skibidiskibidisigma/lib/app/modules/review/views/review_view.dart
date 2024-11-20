@@ -119,7 +119,7 @@ class ReviewView extends GetView<ReviewController> {
                       return Padding(
                           padding: const EdgeInsets.symmetric(
                               vertical: 8.0, horizontal: 10),
-                          child: GestureDetector(
+                          child: GestureDetector(                                            
                             onTap: () {
                               Get.to(() => Clickedreview(),
                                   arguments:

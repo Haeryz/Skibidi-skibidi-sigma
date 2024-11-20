@@ -63,10 +63,6 @@ class _ClickedreviewState extends State<Clickedreview> {
                       : review['mediaUrls'].length, // Limit to 9 items
                   itemBuilder: (context, index) {
                     final mediaUrl = review['mediaUrls'][index];
-
-                    // Debugging output for mediaUrl
-                    // print('Media URL: $mediaUrl');
-
                     if (mediaUrl.contains('.mp4')) {
                       // Video Section
                       return FutureBuilder(
