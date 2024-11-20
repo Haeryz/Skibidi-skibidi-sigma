@@ -114,7 +114,7 @@ class AuthenticationController extends GetxController {
       Get.offNamed(Routes.HOME);
     } else {
       // Navigate to the authentication screen
-      Get.offNamed(Routes.AUTHENTICATION);
+      Get.testMode = true;
     }
   }
 

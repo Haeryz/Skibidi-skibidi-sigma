@@ -69,9 +69,10 @@ dependencies:
   mime: ^1.0.6
   speech_to_text: ^7.0.0
   permission_handler: ^11.3.1
+  audioplayers: ^6.1.0
   skeletonizer: ^1.4.2
   shimmer: ^3.0.0
-  
+
 
 dev_dependencies:
   flutter_test:
@@ -102,6 +103,7 @@ flutter:
     - assets/icon/bromo.png
     - assets/icon/pantai.png
     - assets/icon/sigma.png
+    - assets/sound/livechat-129007.mp3
     - .env
   #   - images/a_dot_ham.jpeg
 
