@@ -7,22 +7,22 @@ class NavbarController extends GetxController {
   void changeTabIndex(int index) {
     selectedIndex.value = index;
 
-    // Add navigation logic here
+    // Use Get.toNamed() to prevent unnecessary page reloads
     switch (index) {
       case 0:
-        Get.toNamed(Routes.HOME); // Navigate to HomeView
+        Get.toNamed(Routes.HOME, preventDuplicates: true);
         break;
       case 1:
-        Get.toNamed(Routes.SEARCH); // Navigate to SearchView
+        Get.toNamed(Routes.SEARCH, preventDuplicates: true);
         break;
       case 2:
-        Get.toNamed(Routes.PLAN); // Navigate to PlanView
+        Get.toNamed(Routes.PLAN, preventDuplicates: true);
         break;
       case 3:
-        Get.toNamed(Routes.REVIEW); // Navigate to ReviewView
+        Get.toNamed(Routes.REVIEW, preventDuplicates: true);
         break;
       case 4:
-        Get.toNamed(Routes.AKUN); // Navigate to AccountView
+        Get.toNamed(Routes.AKUN, preventDuplicates: true);
         break;
     }
   }

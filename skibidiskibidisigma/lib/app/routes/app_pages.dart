@@ -41,6 +41,7 @@ class AppPages {
       name: _Paths.HOME,
       page: () => const HomeView(),
       binding: HomeBinding(),
+      transition: Transition.fade,
     ),
     GetPage(
       name: _Paths.SEARCH,
@@ -56,6 +57,7 @@ class AppPages {
       name: _Paths.PROFILE,
       page: () => const ProfileView(),
       binding: ProfileBinding(),
+      transition: Transition.fade,
     ),
     GetPage(
       name: _Paths.WIKIPEDIA,
@@ -66,16 +68,19 @@ class AppPages {
       name: _Paths.AKUN,
       page: () => const akunView(),
       binding: akunBinding(),
+      transition: Transition.fade,
     ),
     GetPage(
       name: _Paths.HOME,
       page: () => TripView(),
       binding: TripBinding(),
+      transition: Transition.fade,
     ),
     GetPage(
       name: _Paths.PLAN,
       page: () => PlanView(),
       binding: PlanBinding(),
+      transition: Transition.fade,
     ),
     GetPage(
       name: _Paths.NOTIFICATION,
@@ -91,6 +96,7 @@ class AppPages {
       name: _Paths.REVIEW,
       page: () => ReviewView(),
       binding: ReviewBinding(),
+      transition: Transition.fade,
     ),
   ];
 }

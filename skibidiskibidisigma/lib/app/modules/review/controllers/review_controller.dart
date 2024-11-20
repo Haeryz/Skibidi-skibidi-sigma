@@ -22,24 +22,27 @@ class ReviewController extends GetxController {
       <File, VideoPlayerController>{}.obs;
   var isLoading = true.obs; // Track loading state
 
-  void fetchReviews() async {
-    try {
-      final querySnapshot = await FirebaseFirestore.instance
-          .collection('reviews') // Replace with your Firestore collection name
-          .orderBy('timestamp',
-              descending: true) // Order by timestamp descending
-          .get();
+void fetchReviews() async {
+  try {
+    isLoading.value = true;  // Set loading to true while fetching data
+    final querySnapshot = await FirebaseFirestore.instance
+        .collection('reviews') 
+        .orderBy('timestamp', descending: true) // Order by timestamp descending
+        .get();
 
-      reviews.value = querySnapshot.docs
-          .map((doc) => {
-                ...doc.data() as Map<String, dynamic>,
-                'id': doc.id, // Add document ID if needed
-              })
-          .toList();
-    } catch (e) {
-      Get.snackbar("Error", "Failed to fetch reviews: $e");
-    }
+    reviews.value = querySnapshot.docs
+        .map((doc) => {
+              ...doc.data() as Map<String, dynamic>,
+              'id': doc.id, // Add document ID if needed
+            })
+        .toList();
+  } catch (e) {
+    Get.snackbar("Error", "Failed to fetch reviews: $e");
+  } finally {
+    isLoading.value = false;  // Set loading to false after data is fetched
   }
+}
+
 
   Future<void> initializeVideoController(File videoFile) async {
     if (!videoControllers.containsKey(videoFile)) {
