@@ -18,18 +18,36 @@ class SearchView extends GetView<local.SearchController> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              decoration: InputDecoration(
-                hintText: 'Jalan ke mana?',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                  borderSide: BorderSide.none,
+            Obx(() {
+              return TextField(
+                decoration: InputDecoration(
+                  hintText: controller.searchQuery.isEmpty
+                      ? 'Jalan ke mana?'
+                      : controller.searchQuery.value,
+                  prefixIcon: const Icon(Icons.search),
+                  suffixIcon: IconButton(
+                    icon: Icon(controller.speechToText.isListening
+                        ? Icons.mic_off
+                        : Icons.mic),
+                    onPressed: () async {
+                      if (controller.speechToText.isListening) {
+                        print("User clicked stop listening.");
+                        controller.stopListening();
+                      } else {
+                        print("User clicked start listening.");
+                        await controller.startListening();
+                      }
+                    },
+                  ),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(30),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey[200],
                 ),
-                filled: true,
-                fillColor: Colors.grey[200],
-              ),
-            ),
+              );
+            }),
             const SizedBox(height: 20),
             Obx(() {
               return Center(
@@ -53,7 +71,10 @@ class SearchView extends GetView<local.SearchController> {
                           ),
                           const SizedBox(height: 10),
                           ElevatedButton(
-                            onPressed: controller.toggleLocation,
+                            onPressed: () {
+                              controller.toggleLocation();
+                              print("User toggled location.");
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
