@@ -4,6 +4,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
 import 'package:workmanager/workmanager.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class PlanController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -47,7 +50,7 @@ class PlanController extends GetxController {
     }
   }
 
-  void clearFormFields(){
+  void clearFormFields() {
     controllerName.clear();
     controllerDescription.clear();
     controllerDate.clear();
@@ -57,7 +60,7 @@ class PlanController extends GetxController {
 
     date.value = DateTime.now().add(const Duration(days: 1));
     arrivalDate.value = DateTime.now().add(const Duration(days: 1));
-  } 
+  }
 
   void selectArrivalDate(BuildContext context) async {
     DateTime today = DateTime.now();
@@ -141,43 +144,85 @@ class PlanController extends GetxController {
   }
 
   void registerBackgroundNotification() {
-  Workmanager().registerPeriodicTask(
-    "tripArrivalNotificationTask",
-    "tripArrivalNotificationTask",
-    frequency: const Duration(hours: 24), // Runs daily
-  );
-}
+    Workmanager().registerPeriodicTask(
+      "tripArrivalNotificationTask",
+      "tripArrivalNotificationTask",
+      frequency: const Duration(hours: 24), // Runs daily
+    );
+  }
 
+  Future<void> setStartLocationFromGPS() async {
+    try {
+      PermissionStatus permissionStatus =
+          await Permission.locationWhenInUse.request();
+
+      if (permissionStatus.isDenied) {
+        _showSnackBarMessage(
+            'Location permission is denied. Please enable it in settings');
+        return;
+      } else if (permissionStatus.isPermanentlyDenied) {
+        _showSnackBarMessage(
+            'Location permission is permanently denied. Please enable it in settings');
+        await openAppSettings();
+        return;
+      }
+
+      bool isLocationEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!isLocationEnabled) {
+        _showSnackBarMessage('Location services are disabled');
+        return;
+      }
+
+      Position position = await Geolocator.getCurrentPosition(
+        locationSettings:
+            const LocationSettings(accuracy: LocationAccuracy.best),
+      );
+
+      double latitude = position.latitude;
+      double longitude = position.longitude;
+
+      Uri googleMapsUri = Uri.parse('https://www.google.com/maps?q=$latitude,$longitude');
+      if (await canLaunchUrl(googleMapsUri)) {
+        await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
+      } else {
+        _showSnackBarMessage('Could not open Google Maps.');
+        return;
+      }
+
+      controllerStartLocation.text = '$latitude, $longitude';
+    } catch (e) {
+      _showSnackBarMessage('An error occurred while fetching location: $e');
+      print("$e");
+    }
+  }
 
   void checkTripArrivalNotifications() async {
-  final currentDate = DateTime.now();
-  final threeDaysFromNow = currentDate.add(const Duration(days: 3));
+    final currentDate = DateTime.now();
+    final threeDaysFromNow = currentDate.add(const Duration(days: 3));
 
+    final tripsSnapshot = await firestore.collection('trips').get();
 
-  final tripsSnapshot = await firestore.collection('trips').get();
+    for (var doc in tripsSnapshot.docs) {
+      final tripData = doc.data();
+      final arrivalDateText = tripData['arrivalDate'];
 
-  for (var doc in tripsSnapshot.docs) {
-    final tripData = doc.data();
-    final arrivalDateText = tripData['arrivalDate'];
+      if (arrivalDateText != null) {
+        final arrivalDate = DateFormat('dd MMMM yyyy').parse(arrivalDateText);
 
-    if (arrivalDateText != null) {
-      final arrivalDate = DateFormat('dd MMMM yyyy').parse(arrivalDateText);
-
-
-      if (arrivalDate.isBefore(threeDaysFromNow) &&
-          arrivalDate.isAfter(currentDate)) {
-        AwesomeNotifications().createNotification(
-          content: NotificationContent(
-            id: doc.id.hashCode,
-            channelKey: 'basic_channel',
-            title: 'Upcoming Trip Reminder',
-            body:
-                'Your trip to ${tripData['destination']} is in less than 3 days!',
-            notificationLayout: NotificationLayout.BigText,
-          ),
-        );
+        if (arrivalDate.isBefore(threeDaysFromNow) &&
+            arrivalDate.isAfter(currentDate)) {
+          AwesomeNotifications().createNotification(
+            content: NotificationContent(
+              id: doc.id.hashCode,
+              channelKey: 'basic_channel',
+              title: 'Upcoming Trip Reminder',
+              body:
+                  'Your trip to ${tripData['destination']} is in less than 3 days!',
+              notificationLayout: NotificationLayout.BigText,
+            ),
+          );
+        }
       }
     }
   }
-}
 }

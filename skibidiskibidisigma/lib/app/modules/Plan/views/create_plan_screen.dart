@@ -100,7 +100,7 @@ class CreatePlanScreen extends StatelessWidget {
             controller: controller.controllerStartLocation,
             suffixIcon: IconButton(
                 onPressed: () {
-                  Get.snackbar('test', 'balls');
+                  controller.setStartLocationFromGPS();
                 },
                 icon: const Icon(Icons.pin_drop_rounded)),
           ), // Use the autocomplete widget here
