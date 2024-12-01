@@ -65,6 +65,7 @@ dependencies:
   permission_handler: ^11.3.1
   audioplayers: ^6.1.0
   skeletonizer: ^1.4.2
+  url_launcher: ^6.3.1
 
 
 dev_dependencies:
