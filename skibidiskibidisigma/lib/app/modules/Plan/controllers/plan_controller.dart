@@ -47,6 +47,18 @@ class PlanController extends GetxController {
     }
   }
 
+  void clearFormFields(){
+    controllerName.clear();
+    controllerDescription.clear();
+    controllerDate.clear();
+    controllerStartLocation.clear();
+    controllerDestination.clear();
+    controllerArrivalDate.clear();
+
+    date.value = DateTime.now().add(const Duration(days: 1));
+    arrivalDate.value = DateTime.now().add(const Duration(days: 1));
+  } 
+
   void selectArrivalDate(BuildContext context) async {
     DateTime today = DateTime.now();
     DateTime? pickedArrivalDate = await showDatePicker(
@@ -116,6 +128,8 @@ class PlanController extends GetxController {
           'arrivalDate': arrivalDateText,
         });
       }
+      clearFormFields();
+
       Get.back(result: true);
     } finally {
       isLoading.value = false;
