@@ -7,7 +7,6 @@ import 'package:skibidiskibidisigma/app/modules/navbar/views/navbar_view.dart';
 import 'package:skibidiskibidisigma/app/modules/review/views/clickedReview.dart';
 import 'package:skibidiskibidisigma/app/modules/review/views/create_reviewViews.dart';
 import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
-import 'package:skeletonizer/skeletonizer.dart';
 import '../controllers/review_controller.dart';
 
 class ReviewView extends GetView<ReviewController> {
@@ -174,14 +173,13 @@ class ReviewView extends GetView<ReviewController> {
                                           fontSize: 16,
                                         ),
                                       ),
-                                      if (formattedDate != null)
-                                        Text(
-                                          formattedDate,
-                                          style: const TextStyle(
-                                            fontSize: 12,
-                                            color: Colors.grey,
-                                          ),
+                                      Text(
+                                        formattedDate,
+                                        style: const TextStyle(
+                                          fontSize: 12,
+                                          color: Colors.grey,
                                         ),
+                                      ),
                                     ],
                                   ),
                                 ),

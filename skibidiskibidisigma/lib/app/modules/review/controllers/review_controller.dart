@@ -32,7 +32,7 @@ void fetchReviews() async {
 
     reviews.value = querySnapshot.docs
         .map((doc) => {
-              ...doc.data() as Map<String, dynamic>,
+              ...doc.data(),
               'id': doc.id, // Add document ID if needed
             })
         .toList();
@@ -83,17 +83,15 @@ void fetchReviews() async {
         }
       } else {
         // Select multiple images from the gallery
-        final List<XFile>? selectedImages = await picker.pickMultiImage();
-        if (selectedImages != null) {
-          if (selectedImages.length + mediaFiles.length <= 9) {
-            for (var image in selectedImages) {
-              mediaFiles.add(File(image.path));
-            }
-          } else {
-            Get.snackbar('Limit Reached', 'You can only add up to 9 items.');
+        final List<XFile> selectedImages = await picker.pickMultiImage();
+        if (selectedImages.length + mediaFiles.length <= 9) {
+          for (var image in selectedImages) {
+            mediaFiles.add(File(image.path));
           }
+        } else {
+          Get.snackbar('Limit Reached', 'You can only add up to 9 items.');
         }
-      }
+            }
     } else {
       if (fromCamera) {
         // Capture a single video from the camera
