@@ -38,9 +38,6 @@ class PlanView extends GetView<PlanController> {
           children: <Widget>[
             WidgetBackground(),
             _buildWidgetListTodo(widthScreen, heightScreen, context),
-            ElevatedButton(onPressed: (){
-              controller.checkTripArrivalNotifications();
-            }, child: const Text('test notification')),
           ],
         ),
       ),
