@@ -1,12 +1,11 @@
-// ignore_for_file: library_private_types_in_public_api
-
 import 'package:flutter/material.dart';
 import 'package:skibidiskibidisigma/app/modules/plan/views/locationService.dart';
 
 class LocationAutocomplete extends StatefulWidget {
   final TextEditingController controller;
+  final Widget? suffixIcon; // Optional suffix icon
 
-  const LocationAutocomplete({required this.controller});
+  const LocationAutocomplete({required this.controller, this.suffixIcon});
 
   @override
   _LocationAutocompleteState createState() => _LocationAutocompleteState();
@@ -16,26 +15,25 @@ class _LocationAutocompleteState extends State<LocationAutocomplete> {
   final LocationService _locationService = LocationService();
   List<dynamic> _suggestions = [];
 
-void _onChanged(String value) async {
-  if (value.isNotEmpty) {
-    try {
-      final response = await _locationService.fetchAutocomplete(value);
-      setState(() {
-        _suggestions = response;
-      });
-    } catch (error) {
-      // Handle error here (e.g., log it or show a message)
+  void _onChanged(String value) async {
+    if (value.isNotEmpty) {
+      try {
+        final response = await _locationService.fetchAutocomplete(value);
+        setState(() {
+          _suggestions = response;
+        });
+      } catch (error) {
+        // Handle error here (e.g., log it or show a message)
+        setState(() {
+          _suggestions = [];
+        });
+      }
+    } else {
       setState(() {
         _suggestions = [];
       });
     }
-  } else {
-    setState(() {
-      _suggestions = [];
-    });
   }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +42,10 @@ void _onChanged(String value) async {
       children: [
         TextField(
           controller: widget.controller,
-          decoration: const InputDecoration(labelText: 'Location'),
+          decoration: InputDecoration(
+            labelText: 'Location',
+            suffixIcon: widget.suffixIcon, // Add the suffixIcon here
+          ),
           onChanged: _onChanged,
           style: const TextStyle(fontSize: 18.0),
         ),

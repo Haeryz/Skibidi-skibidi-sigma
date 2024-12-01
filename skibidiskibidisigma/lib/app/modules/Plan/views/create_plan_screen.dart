@@ -97,11 +97,21 @@ class CreatePlanScreen extends StatelessWidget {
             style: const TextStyle(fontSize: 18.0),
           ),
           LocationAutocomplete(
-              controller: controller
-                  .controllerStartLocation), // Use the autocomplete widget here
+            controller: controller.controllerStartLocation,
+            suffixIcon: IconButton(
+                onPressed: () {
+                  Get.snackbar('test', 'balls');
+                },
+                icon: const Icon(Icons.pin_drop_rounded)),
+          ), // Use the autocomplete widget here
           LocationAutocomplete(
-              controller: controller
-                  .controllerDestination), // Use the autocomplete widget here
+            controller: controller.controllerDestination,
+            suffixIcon: IconButton(
+                onPressed: () {
+                  Get.snackbar('test', 'balls');
+                },
+                icon: const Icon(Icons.pin_drop_rounded)),
+          ), // Use the autocomplete widget here
         ],
       ),
     );
