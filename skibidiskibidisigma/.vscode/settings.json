@@ -1,4 +1,5 @@
 {
     "cmake.sourceDirectory": "D:/Semester 5/P.Mobile/Skibidi-skibidi-sigma/skibidiskibidisigma/linux",
-    "java.configuration.updateBuildConfiguration": "interactive"
+    "java.configuration.updateBuildConfiguration": "interactive",
+    "java.compile.nullAnalysis.mode": "automatic"
 }

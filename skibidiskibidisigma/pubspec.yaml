@@ -66,6 +66,7 @@ dependencies:
   audioplayers: ^6.1.0
   skeletonizer: ^1.4.2
   url_launcher: ^6.3.1
+  google_maps_flutter: ^2.10.0
 
 
 dev_dependencies:
