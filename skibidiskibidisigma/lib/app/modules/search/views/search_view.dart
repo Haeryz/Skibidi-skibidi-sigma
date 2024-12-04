@@ -135,19 +135,37 @@ class SearchView extends GetView<local.SearchController> {
                         ),
                         const SizedBox(height: 10),
                         if (controller.isLocationActive.value)
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Obx(() => Text(
-                                  controller.currentLocation.value.isEmpty
-                                      ? 'Mengambil lokasi...'
-                                      : 'Lokasi Anda: ${controller.currentLocation.value}',
-                                  textAlign: TextAlign.center,
-                                  style: const TextStyle(
-                                    color: Colors.green,
-                                    fontSize: 14,
-                                  ),
-                                )),
-                          ),
+                        Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Center(
+                          child: Obx(() => Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                controller.currentLocation.value.isEmpty
+                                  ? 'Mengambil lokasi...'
+                                  : 'Lokasi Anda: ${controller.currentLocation.value}',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.green,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                controller.fullAddress.value.isEmpty
+                                  ? 'Mengambil alamat...'
+                                  : 'Alamat lengkap: ${controller.fullAddress.value}',
+                                textAlign: TextAlign.center,
+                                style: const TextStyle(
+                                  color: Colors.blue,
+                                  fontSize: 14,
+                                ),
+                              ),
+                            ],
+                          )),
+                          )
+                        ),
                       ],
                     ),
                   );

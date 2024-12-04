@@ -52,17 +52,17 @@ class SearchController extends GetxController {
 
   Future<void> setLocationFromGPS() async {
     try {
-      // Check if location permission is granted
+      // Cek permission
       if (await Permission.location.request().isGranted) {
-        // Get the current position
+        // Mendapatkan current location
         Position position = await Geolocator.getCurrentPosition(
             desiredAccuracy: LocationAccuracy.high);
 
-        // Save coordinates
+        // Menyimpan kordinat
         currentLocation.value =
             "Lat: ${position.latitude}, Long: ${position.longitude}";
 
-        // Convert coordinates to a human-readable address
+        // Menerjemahkan koordinat menjadi alamat yang bisa dibaca manusia
         List<Placemark> placemarks = await placemarkFromCoordinates(
           position.latitude,
           position.longitude,
