@@ -1,19 +1,29 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:audioplayers/audioplayers.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:geocoding/geocoding.dart';
+
+import '../views/location_service.dart';
 
 class SearchController extends GetxController {
   var isLocationActive = false.obs;
   var searchQuery = ''.obs;
   late stt.SpeechToText speechToText;
-  
-  // Audio player instance
+
+  final TextEditingController controllerLocation = TextEditingController();
+  final LocationService _locationService = LocationService();
+  var locationSuggestions = <dynamic>[].obs;
+
   final AudioPlayer _audioPlayer = AudioPlayer();
-  
-  // Observables for audio state
   var isAudioPlaying = false.obs;
   var currentAudioPosition = 0.obs;
   var audioTotalDuration = 0.obs;
+
+  var currentLocation = ''.obs;
+  var fullAddress = ''.obs;
 
   @override
   void onInit() {
@@ -21,17 +31,14 @@ class SearchController extends GetxController {
     speechToText = stt.SpeechToText();
     print("SpeechToText initialized.");
 
-    // Listen to audio player state changes
     _audioPlayer.onPlayerStateChanged.listen((PlayerState state) {
       isAudioPlaying.value = state == PlayerState.playing;
     });
 
-    // Listen to audio position changes
     _audioPlayer.onPositionChanged.listen((Duration position) {
       currentAudioPosition.value = position.inMilliseconds;
     });
 
-    // Listen to audio duration changes
     _audioPlayer.onDurationChanged.listen((Duration duration) {
       audioTotalDuration.value = duration.inMilliseconds;
     });
@@ -39,22 +46,69 @@ class SearchController extends GetxController {
 
   @override
   void onClose() {
-    // Dispose of audio player when controller is closed
     _audioPlayer.dispose();
     super.onClose();
+  }
+
+  Future<void> setLocationFromGPS() async {
+    try {
+      // Cek permission
+      if (await Permission.location.request().isGranted) {
+        // Mendapatkan current location
+        Position position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
+
+        // Menyimpan kordinat
+        currentLocation.value =
+            "Lat: ${position.latitude}, Long: ${position.longitude}";
+
+        // Menerjemahkan koordinat menjadi alamat yang bisa dibaca manusia
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+          position.latitude,
+          position.longitude,
+        );
+
+        if (placemarks.isNotEmpty) {
+          Placemark place = placemarks.first;
+          fullAddress.value =
+              "${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}";
+          print("Full address: ${fullAddress.value}");
+        }
+      } else {
+        currentLocation.value = "Permission denied.";
+        fullAddress.value = "Unable to fetch address.";
+        print("Location permission denied.");
+      }
+    } catch (e) {
+      currentLocation.value = "Failed to get location.";
+      fullAddress.value = "Error: $e";
+      print("Error fetching location: $e");
+    }
+  }
+
+  Future<void> fetchLocationSuggestions(String query) async {
+    if (query.isNotEmpty) {
+      try {
+        final response = await _locationService.fetchAutocomplete(query);
+        locationSuggestions.value = response;
+      } catch (error) {
+        print("Error fetching location suggestions: $error");
+        locationSuggestions.value = [];
+      }
+    } else {
+      locationSuggestions.value = [];
+    }
   }
 
   void toggleLocation() {
     isLocationActive.value = !isLocationActive.value;
     print("Location status toggled: ${isLocationActive.value}");
-    
-    // Play notification sound when location is activated
+
     if (isLocationActive.value) {
       playAudio('sound/livechat-129007.mp3');
     }
   }
 
-  // Play audio from a given source
   Future<void> playAudio(String path) async {
     try {
       await _audioPlayer.play(AssetSource(path));
@@ -64,31 +118,26 @@ class SearchController extends GetxController {
     }
   }
 
-  // Pause the currently playing audio
   Future<void> pauseAudio() async {
     await _audioPlayer.pause();
     print("Audio paused");
   }
 
-  // Resume the paused audio
   Future<void> resumeAudio() async {
     await _audioPlayer.resume();
     print("Audio resumed");
   }
 
-  // Stop the audio completely
   Future<void> stopAudio() async {
     await _audioPlayer.stop();
     print("Audio stopped");
   }
 
-  // Seek to a specific position in the audio
   Future<void> seekAudio(Duration position) async {
     await _audioPlayer.seek(position);
     print("Audio seeked to ${position.inSeconds} seconds");
   }
 
-  // Existing speech-to-text methods remain the same
   Future<void> startListening() async {
     try {
       if (speechToText.isListening) {
