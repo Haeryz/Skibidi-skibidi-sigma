@@ -111,7 +111,7 @@ class AuthenticationController extends GetxController {
 
     if (isLoggedIn && _auth.currentUser != null) {
       // Navigate to the home or HOME screen if the user is still logged in
-      Get.testMode = true;
+      Get.offNamed(Routes.HOME);
     } else {
       // Navigate to the authentication screen
       Get.testMode = true;
