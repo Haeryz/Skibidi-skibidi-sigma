@@ -15,6 +15,7 @@ abstract class Routes {
   static const NAVBAR = _Paths.NAVBAR;
   static const REELS = _Paths.REELS;
   static const REVIEW = _Paths.REVIEW;
+  static const CONNECTION = _Paths.CONNECTION;
 }
 
 abstract class _Paths {
@@ -32,4 +33,5 @@ abstract class _Paths {
   static const NAVBAR = '/navbar';
   static const REELS = '/reels';
   static const REVIEW = '/review';
+  static const CONNECTION = '/connection';
 }

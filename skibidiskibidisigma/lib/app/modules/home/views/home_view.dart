@@ -200,6 +200,9 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ],
                   ),
+                                        ElevatedButton(onPressed: () {
+                        Get.toNamed(Routes.CONNECTION);
+                      }, child: const Text('skibidi'))
                 ],
               ),
             ),

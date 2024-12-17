@@ -67,6 +67,9 @@ dependencies:
   skeletonizer: ^1.4.2
   url_launcher: ^6.3.1
   google_maps_flutter: ^2.10.0
+  connectivity_plus: ^6.1.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
 
 
 dev_dependencies:
