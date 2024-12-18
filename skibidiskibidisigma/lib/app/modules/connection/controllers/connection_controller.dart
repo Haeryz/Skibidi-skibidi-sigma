@@ -10,7 +10,6 @@ class ConnectionController extends GetxController {
     super.onInit();
     _checkInitialConnection();
     connectivity.onConnectivityChanged.listen((connectivityResults) {
-      // Handle the first element of the list
       if (connectivityResults.isNotEmpty) {
         _updateConnectionStatus(connectivityResults.first);
       }
@@ -28,6 +27,18 @@ class ConnectionController extends GetxController {
       Get.snackbar("Connection Status", "No Internet Connection");
     } else {
       Get.snackbar("Connection Status", "Connected to Internet");
+    }
+  }
+
+  void retryConnection() {
+    // If previous route exists, go back
+    if (Get.previousRoute.isNotEmpty) {
+      Get.back();
+    } else {
+      // If no previous route, you might want to navigate to a default route
+      // For example:
+      // Get.offAllNamed('/home');
+      print('No previous route found');
     }
   }
 }

@@ -1,9 +1,12 @@
+// File 4: /lib/app/modules/home/views/home_view.dart
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:skibidiskibidisigma/app/modules/navbar/views/navbar_view.dart';
 import 'package:skibidiskibidisigma/app/routes/app_pages.dart';
 import '../controllers/home_controller.dart';
 import 'package:skibidiskibidisigma/app/modules/Profile/controllers/profile_controller.dart';
+import 'package:skibidiskibidisigma/app/modules/connection/controllers/connection_controller.dart'; // Import the controller
 
 class HomeView extends GetView<HomeController> {
   const HomeView({super.key});
@@ -12,6 +15,7 @@ class HomeView extends GetView<HomeController> {
   Widget build(BuildContext context) {
     // Initialize controllers
     final ProfileController profileController = Get.find<ProfileController>();
+    final ConnectionController connectionController = Get.put(ConnectionController()); // Add this line to initialize the controller
 
     // State to track description expansion
     RxBool isExpanded = false.obs;
@@ -71,9 +75,15 @@ class HomeView extends GetView<HomeController> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       GestureDetector(
-                        onTap: () {
-                          Get.toNamed(Routes
-                              .WIKIPEDIA); // Change PLAN to the desired page
+                        onTap: () async {
+                          // Check internet connection before navigating
+                          if (!connectionController.isConnected.value) {
+                            // If not connected, navigate to ConnectionView
+                            Get.toNamed(Routes.CONNECTION);
+                          } else {
+                            // If connected, navigate to the desired page
+                            Get.toNamed(Routes.WIKIPEDIA); // Change PLAN to the desired page
+                          }
                         },
                         child: SizedBox(
                           width: 150,
@@ -134,11 +144,15 @@ class HomeView extends GetView<HomeController> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
-                          Get.toNamed(Routes
-                              .WIKIPEDIA); // Change PLAN to the desired page
-                          Get.toNamed(
-                              Routes.PLAN); // Change PLAN to the desired page
+                        onTap: () async {
+                          // Check internet connection before navigating
+                          if (!connectionController.isConnected.value) {
+                            // If not connected, navigate to ConnectionView
+                            Get.toNamed(Routes.CONNECTION);
+                          } else {
+                            // If connected, navigate to the desired page
+                            Get.toNamed(Routes.PLAN); // Change PLAN to the desired page
+                          }
                         },
                         child: SizedBox(
                           width: 150,
@@ -200,9 +214,11 @@ class HomeView extends GetView<HomeController> {
                       ),
                     ],
                   ),
-                                        ElevatedButton(onPressed: () {
+                  ElevatedButton(
+                      onPressed: () {
                         Get.toNamed(Routes.CONNECTION);
-                      }, child: const Text('skibidi'))
+                      },
+                      child: const Text('skibidi'))
                 ],
               ),
             ),
