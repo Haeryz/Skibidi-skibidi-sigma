@@ -1,9 +1,19 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        // Gunakan versi terbaru dari Android Gradle Plugin
+        classpath 'com.android.tools.build:gradle:8.1.1'
+    }
+}
+
 allprojects {
     repositories {
         google()
         mavenCentral()
     }
-    
 }
 
 rootProject.buildDir = "../build"
@@ -17,4 +27,3 @@ subprojects {
 tasks.register("clean", Delete) {
     delete rootProject.buildDir
 }
-
