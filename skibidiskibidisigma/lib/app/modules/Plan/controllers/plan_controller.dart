@@ -1,4 +1,6 @@
 import 'package:awesome_notifications/awesome_notifications.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
@@ -20,15 +22,19 @@ class PlanController extends GetxController {
   final TextEditingController controllerArrivalDate = TextEditingController();
 
   var isLoading = false.obs;
-  var date = DateTime.now().add(const Duration(days: 1)).obs;
+  var date = DateTime.now().add(const Duration(days: 0)).obs;
   var arrivalDate = DateTime.now().add(const Duration(days: 1)).obs;
+
 
   final storage = GetStorage();
   final RxBool isOnline = true.obs;
 
+  final box = GetStorage();
+
   @override
   void onInit() {
     super.onInit();
+
     _initConnectivity();
     syncPendingTasks();
   }
@@ -39,6 +45,18 @@ class PlanController extends GetxController {
       isOnline.value = result.isNotEmpty && result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi);
       if (isOnline.value) {
         syncPendingTasks();
+      }
+    });
+  }
+
+
+
+    Connectivity()
+        .onConnectivityChanged
+        .listen((List<ConnectivityResult> results) {
+      // Assuming we care about any result that is not 'none'
+      if (results.isNotEmpty && results.first != ConnectivityResult.none) {
+        _uploadLocalData();
       }
     });
   }
@@ -121,6 +139,7 @@ class PlanController extends GetxController {
   String destination = controllerDestination.text.trim();
   String arrivalDateText = controllerArrivalDate.text.trim();
 
+
   if (name.isEmpty || startLocation.isEmpty || destination.isEmpty || arrivalDateText.isEmpty) {
     _showSnackBarMessage('All fields are required');
     return;
@@ -202,6 +221,44 @@ class PlanController extends GetxController {
       } else {
         await firestore.collection('trips').add(task);
       }
+
+    isLoading.value = true; // Start loading
+
+    try {
+      Map<String, dynamic> tripData = {
+        'name': name,
+        'description': description,
+        'date': taskDate,
+        'startLocation': startLocation,
+        'destination': destination,
+        'arrivalDate': arrivalDateText,
+      };
+
+      // Check connectivity and save accordingly
+      var connectivityResult = await Connectivity().checkConnectivity();
+
+      if (connectivityResult == ConnectivityResult.none) {
+        // Save data locally when offline
+        _saveLocally(tripData);
+        isLoading.value = false; // Set loading to false immediately if offline
+        Get.snackbar("Offline", "Data saved locally. Will upload when online.");
+      } else {
+        // Save to Firestore when online
+        if (isEdit && documentId != null) {
+          DocumentReference documentTask = firestore.doc('trips/$documentId');
+          await documentTask.update(tripData);
+        } else {
+          await firestore.collection('trips').add(tripData);
+        }
+        isLoading.value = false; // Set loading to false after saving
+      }
+
+      clearFormFields();
+      Get.back(result: true);
+    } catch (e) {
+      isLoading.value = false; // Always set loading to false on error
+      _showSnackBarMessage('An error occurred: $e');
+
     }
 
     // Clear the local storage after sync
@@ -222,6 +279,25 @@ class PlanController extends GetxController {
       backgroundColor: Colors.white,
       duration: const Duration(seconds: 3),
     );
+  }
+
+  void _saveLocally(Map<String, dynamic> tripData) {
+    List<dynamic> trips = box.read('localTrips') ?? [];
+    trips.add(tripData);
+    box.write('localTrips', trips);
+    Get.snackbar("Success", "Saved locally. Will upload when online.");
+  }
+
+  Future<void> _uploadLocalData() async {
+    List<dynamic> localTrips = box.read('localTrips') ?? [];
+    if (localTrips.isEmpty) return;
+
+    for (var trip in localTrips) {
+      await firestore.collection('trips').add(trip);
+    }
+
+    box.remove('localTrips');
+    Get.snackbar("Success", "Local data uploaded to Firebase.");
   }
 
   void registerBackgroundNotification() {
@@ -261,7 +337,8 @@ class PlanController extends GetxController {
       double latitude = position.latitude;
       double longitude = position.longitude;
 
-      Uri googleMapsUri = Uri.parse('https://www.google.com/maps?q=$latitude,$longitude');
+      Uri googleMapsUri =
+          Uri.parse('https://www.google.com/maps?q=$latitude,$longitude');
       if (await canLaunchUrl(googleMapsUri)) {
         await launchUrl(googleMapsUri, mode: LaunchMode.externalApplication);
       } else {

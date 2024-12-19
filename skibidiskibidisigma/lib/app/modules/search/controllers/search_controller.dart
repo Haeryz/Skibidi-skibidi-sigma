@@ -2,21 +2,31 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:audioplayers/audioplayers.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:geocoding/geocoding.dart';
 import '../views/location_service.dart';
 
 class SearchController extends GetxController {
   var isLocationActive = false.obs;
   var searchQuery = ''.obs;
   late stt.SpeechToText speechToText;
-  
   final TextEditingController controllerLocation = TextEditingController();
   final LocationService _locationService = LocationService();
   var locationSuggestions = <dynamic>[].obs;
   
+
+  final TextEditingController controllerLocation = TextEditingController();
+  final LocationService _locationService = LocationService();
+  var locationSuggestions = <dynamic>[].obs;
+
   final AudioPlayer _audioPlayer = AudioPlayer();
   var isAudioPlaying = false.obs;
   var currentAudioPosition = 0.obs;
   var audioTotalDuration = 0.obs;
+
+  var currentLocation = ''.obs;
+  var fullAddress = ''.obs;
 
   @override
   void onInit() {
@@ -43,9 +53,46 @@ class SearchController extends GetxController {
     super.onClose();
   }
 
+
   void setLocationFromGPS() async {
     print("Fetching location from GPS");
     // Implement GPS location fetching logic
+
+  Future<void> setLocationFromGPS() async {
+    try {
+      // Cek permission
+      if (await Permission.location.request().isGranted) {
+        // Mendapatkan current location
+        Position position = await Geolocator.getCurrentPosition(
+            desiredAccuracy: LocationAccuracy.high);
+
+        // Menyimpan kordinat
+        currentLocation.value =
+            "Lat: ${position.latitude}, Long: ${position.longitude}";
+
+        // Menerjemahkan koordinat menjadi alamat yang bisa dibaca manusia
+        List<Placemark> placemarks = await placemarkFromCoordinates(
+          position.latitude,
+          position.longitude,
+        );
+
+        if (placemarks.isNotEmpty) {
+          Placemark place = placemarks.first;
+          fullAddress.value =
+              "${place.street}, ${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}";
+          print("Full address: ${fullAddress.value}");
+        }
+      } else {
+        currentLocation.value = "Permission denied.";
+        fullAddress.value = "Unable to fetch address.";
+        print("Location permission denied.");
+      }
+    } catch (e) {
+      currentLocation.value = "Failed to get location.";
+      fullAddress.value = "Error: $e";
+      print("Error fetching location: $e");
+    }
+
   }
 
   Future<void> fetchLocationSuggestions(String query) async {
@@ -65,7 +112,6 @@ class SearchController extends GetxController {
   void toggleLocation() {
     isLocationActive.value = !isLocationActive.value;
     print("Location status toggled: ${isLocationActive.value}");
-    
     if (isLocationActive.value) {
       playAudio('sound/livechat-129007.mp3');
     }

@@ -66,8 +66,12 @@ dependencies:
   audioplayers: ^6.1.0
   skeletonizer: ^1.4.2
   url_launcher: ^6.3.1
+  google_maps_flutter: ^2.10.0
   connectivity_plus: ^6.1.1
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
   get_storage: ^2.1.1
+
 
 dev_dependencies:
   flutter_test:

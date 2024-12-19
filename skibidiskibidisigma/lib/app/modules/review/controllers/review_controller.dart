@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -21,28 +22,31 @@ class ReviewController extends GetxController {
   final RxMap<File, VideoPlayerController> videoControllers =
       <File, VideoPlayerController>{}.obs;
   var isLoading = true.obs; // Track loading state
+  var isConnected = false.obs;
+  final Connectivity _connectivity = Connectivity();
 
-void fetchReviews() async {
-  try {
-    isLoading.value = true;  // Set loading to true while fetching data
-    final querySnapshot = await FirebaseFirestore.instance
-        .collection('reviews') 
-        .orderBy('timestamp', descending: true) // Order by timestamp descending
-        .get();
+  void fetchReviews() async {
+    try {
+      isLoading.value = true; // Set loading to true while fetching data
+      final querySnapshot = await FirebaseFirestore.instance
+          .collection('reviews')
+          .orderBy('timestamp',
+              descending: true) // Order by timestamp descending
+          .get();
 
-    reviews.value = querySnapshot.docs
-        .map((doc) => {
-              ...doc.data(),
-              'id': doc.id, // Add document ID if needed
-            })
-        .toList();
-  } catch (e) {
-    Get.snackbar("Error", "Failed to fetch reviews: $e");
-  } finally {
-    isLoading.value = false;  // Set loading to false after data is fetched
+
+      reviews.value = querySnapshot.docs
+          .map((doc) => {
+                ...doc.data(),
+                'id': doc.id, // Add document ID if needed
+              })
+          .toList();
+    } catch (e) {
+      Get.snackbar("Error", "Failed to fetch reviews: $e");
+    } finally {
+      isLoading.value = false; // Set loading to false after data is fetched
+    }
   }
-}
-
 
   Future<void> initializeVideoController(File videoFile) async {
     if (!videoControllers.containsKey(videoFile)) {
@@ -91,7 +95,7 @@ void fetchReviews() async {
         } else {
           Get.snackbar('Limit Reached', 'You can only add up to 9 items.');
         }
-            }
+      }
     } else {
       if (fromCamera) {
         // Capture a single video from the camera

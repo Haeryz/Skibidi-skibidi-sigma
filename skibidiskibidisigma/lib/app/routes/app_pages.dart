@@ -8,6 +8,8 @@ import '../modules/akun/bindings/akun_binding.dart';
 import '../modules/akun/views/akun_view.dart';
 import '../modules/authentication/bindings/authentication_binding.dart';
 import '../modules/authentication/views/authentication_view.dart';
+import '../modules/connection/bindings/connection_binding.dart';
+import '../modules/connection/views/connection_view.dart';
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_view.dart';
 import '../modules/navbar/bindings/navbar_binding.dart';
@@ -28,7 +30,6 @@ part 'app_routes.dart';
 
 class AppPages {
   AppPages._();
-
 
   static const INITIAL = Routes.SPLASH;
 
@@ -91,6 +92,11 @@ class AppPages {
       page: () => ReviewView(),
       binding: ReviewBinding(),
       transition: Transition.fade,
+    ),
+    GetPage(
+      name: _Paths.CONNECTION,
+      page: () => const ConnectionView(),
+      binding: ConnectionBinding(),
     ),
   ];
 }
