@@ -2,15 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../controllers/search_controller.dart' as local;
 
-
 class LocationAutocomplete extends StatefulWidget {
   final TextEditingController controller;
   final Widget? suffixIcon;
 
-  const LocationAutocomplete({
-    required this.controller, 
-    this.suffixIcon
-  });
+  const LocationAutocomplete({required this.controller, this.suffixIcon});
 
   @override
   _LocationAutocompleteState createState() => _LocationAutocompleteState();
@@ -42,7 +38,8 @@ class _LocationAutocompleteState extends State<LocationAutocomplete> {
                   child: ListView.builder(
                     itemCount: _searchController.locationSuggestions.length,
                     itemBuilder: (context, index) {
-                      var suggestion = _searchController.locationSuggestions[index];
+                      var suggestion =
+                          _searchController.locationSuggestions[index];
                       return ListTile(
                         title: Text(suggestion['display_name']),
                         onTap: () {

@@ -66,7 +66,7 @@ void main() async {
 
   // Register controllers after Firebase initialization
   Get.put(AuthenticationController());
-  Get.lazyPut<local.SearchController>(() => local.SearchController());
+  Get.put(local.SearchController());
   Get.put(PlanController());
   Get.put(NavbarController());
   Get.put(ReviewController());

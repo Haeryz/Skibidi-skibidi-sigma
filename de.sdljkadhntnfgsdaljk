@@ -1,0 +1,302 @@
+[33mcommit 4114fa1e96c1141e6459222fd8a832fb92001860[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Merge: fcab48c e382cf1
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Thu Dec 19 09:41:29 2024 +0700
+
+    Merge pull request #16 from Haeryz/Eka
+    
+    eka add plan offline / online
+
+[33mcommit e382cf1e6139eca1771b4f9aa7d27764b87ac8fc[m[33m ([m[1;31morigin/Eka[m[33m)[m
+Merge: 6e746dc fcab48c
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Thu Dec 19 09:36:40 2024 +0700
+
+    Merge branch 'main' into Eka
+
+[33mcommit 6e746dc7a30ee13dd86aadda8d80fcc931782f2a[m
+Author: TwicePie <kknurarief@gmail.com>
+Date:   Thu Dec 19 05:52:36 2024 +0700
+
+    eka add plan offline / online
+
+[33mcommit fcab48c9a4dab84b89cd028a86137f45c4af3522[m
+Author: nizam <anharinizam@gmail.com>
+Date:   Wed Dec 18 21:53:10 2024 +0700
+
+    commit
+
+[33mcommit 5006d3e978ae4f46925ec38afad432b771a271a4[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Dec 18 14:44:46 2024 +0700
+
+    Infinite loading
+
+[33mcommit ca116373b2460ea4c8f999de79b33717826e2169[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Tue Dec 17 22:15:12 2024 +0700
+
+    Check internet connection
+    
+    Co-authored-by: Eka <TwicePie@users.noreply.github.com>
+
+[33mcommit 7355bbef11ae2aa88ffe5ff3c614c5b940dd469b[m
+Merge: eab33e3 801e45b
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Thu Dec 5 11:10:41 2024 +0700
+
+    Merge pull request #15 from Haeryz/nizam
+    
+    update
+
+[33mcommit 801e45bc3dfa35cdba3f3a7a4c2d67d7d8f666eb[m
+Author: nizam <anharinizam@gmail.com>
+Date:   Thu Dec 5 03:47:37 2024 +0700
+
+    update
+
+[33mcommit eab33e32d80b0341d8564705f420824aa3025827[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Dec 4 21:19:11 2024 +0700
+
+    final modul 5
+
+[33mcommit 4e2b29749624efe50ff46edd5b6f44ad958e799d[m
+Merge: 9592a45 8e494fb
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Dec 4 21:12:05 2024 +0700
+
+    Merge branch 'main' of https://github.com/Haeryz/Skibidi-skibidi-sigma
+
+[33mcommit 9592a45e9fc50e01b1d44adbc607de8ef521fb5d[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Dec 4 21:10:00 2024 +0700
+
+    error during builds
+
+[33mcommit 8e494fb5f884b3447f4394cc81aaf61a81678b5c[m
+Merge: c0112f6 20f55a7
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Dec 4 18:35:37 2024 +0700
+
+    Merge pull request #14 from Haeryz/nizam
+    
+    update
+
+[33mcommit 20f55a7d822275c314e62be8beeec35af71d96fa[m
+Author: nizam <anharinizam@gmail.com>
+Date:   Wed Dec 4 18:25:18 2024 +0700
+
+    update
+
+[33mcommit c0112f6c89b9cd20884096fdcde8aac3e2ef24df[m
+Merge: fe7cbf3 f58ae4e
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Dec 4 08:02:09 2024 +0700
+
+    Merge pull request #13 from Haeryz/nizam
+    
+    skibidi mewing ohio sigma gooning hawk tuah
+
+[33mcommit f58ae4e351c065b3a5ab8c2b76362922178d365a[m
+Author: nizam <anharinizam@gmail.com>
+Date:   Tue Dec 3 22:44:57 2024 +0700
+
+    sory
+
+[33mcommit fe7cbf335e83454256a92e910dcef6caaa300f98[m
+Merge: 7c0f494 05e029f
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Tue Dec 3 22:29:10 2024 +0700
+
+    Merge pull request #12 from Haeryz/nizam
+    
+    nizam dan eka
+
+[33mcommit 05e029f8598a402d5ccc0c927c63021fc1d0cdef[m
+Author: nizam <anharinizam@gmail.com>
+Date:   Tue Dec 3 22:23:06 2024 +0700
+
+    nizam dan eka
+
+[33mcommit 7c0f494226a120d5270da2a51d0d0b5617af084d[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sun Dec 1 21:48:02 2024 +0700
+
+    idk what are these lol
+
+[33mcommit 810fa9c657cd2c9edef2b3ce6bda01f9c1417377[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sun Dec 1 21:47:50 2024 +0700
+
+    added gps detection
+
+[33mcommit 541a716ef994b457ab7a5c03fc538a0fcd6e358d[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sun Dec 1 21:47:32 2024 +0700
+
+    added some locations thing permission
+
+[33mcommit a8619f87893502c4be36f780f5cc9ab9a6fee71a[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sun Dec 1 20:54:45 2024 +0700
+
+    cleaning repo
+
+[33mcommit 64f1854388e6e36be03ef7393cfe9812c3fb9f73[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sun Dec 1 20:49:44 2024 +0700
+
+    cleaning repo
+
+[33mcommit d48c0dd7cd2d451af4a42572a9b9805810773b2b[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sun Dec 1 20:49:39 2024 +0700
+
+    added clear form function
+
+[33mcommit 069c935bbc60084639eef630c5ab75bdb7143ed4[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sun Dec 1 20:49:27 2024 +0700
+
+    added dynamic icon
+
+[33mcommit a4d4c6b2a3545624bffbb61b76b59dad44a00674[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sun Dec 1 20:48:54 2024 +0700
+
+    added location permission
+
+[33mcommit 176c64238d34c5cd7fe905ddae2c05d2d585d037[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Nov 20 22:02:22 2024 +0700
+
+    skibidi
+
+[33mcommit bbee799e993eb98fe395b1ccf85ddcf999f6e515[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Nov 20 21:36:51 2024 +0700
+
+    added timestamp order and camera pick
+
+[33mcommit 2cd10ffa176f4bd1d63157eca3344be418cd4b17[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Nov 20 21:09:24 2024 +0700
+
+    revert
+
+[33mcommit 7a06b1577f0f3cb4000b98a2fda3a2b90fbabd00[m
+Merge: 2dd40ff f04a747
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Nov 20 21:00:18 2024 +0700
+
+    Merge pull request #11 from Haeryz/eka cihuy
+    
+    Penambahan Speaker Search
+
+[33mcommit f04a747a839fcd01e780a67e22c1e19380093ce1[m
+Merge: da0ee02 2dd40ff
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Nov 20 20:59:58 2024 +0700
+
+    Merge branch 'main' into eka
+
+[33mcommit 2dd40ffc1503a413f22d2d47bd00fd2e88a2fa81[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Nov 20 20:58:11 2024 +0700
+
+    mewing
+
+[33mcommit da0ee02b7e840b8c92e4d5433afb0faf49f9a3fd[m
+Author: TwicePie <kknurarief@gmail.com>
+Date:   Wed Nov 20 20:42:19 2024 +0700
+
+    Penambahan Speaker Search
+
+[33mcommit 8da263970e5fb9f2c32895ad1bcee4318412cc91[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Nov 20 20:28:19 2024 +0700
+
+    initial route splash
+
+[33mcommit f4fd63907151f6b5c8ed871455cd2c5692882fea[m
+Merge: ef74a18 b8003bc
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Nov 20 20:01:22 2024 +0700
+
+    Merge branch 'main' of https://github.com/Haeryz/Skibidi-skibidi-sigma
+
+[33mcommit ef74a182abd7fe289829f3398f364a0136f51a68[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Nov 20 20:01:13 2024 +0700
+
+    Cleaning repo
+
+[33mcommit b8003bccce9f25dc6880a55c5cae52ad985a4935[m
+Merge: fcfaf59 92ffde2
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Wed Nov 20 20:00:17 2024 +0700
+
+    Merge pull request #10 from Haeryz/nizam (Microphone)
+    
+    Nizam
+
+[33mcommit 92ffde24545f40905cc143c7262b1b2db424af14[m
+Author: nizam <anharinizam@gmail.com>
+Date:   Wed Nov 20 19:45:34 2024 +0700
+
+    menambahkan fitur mikrofon
+
+[33mcommit 90070e06e5a257825aa59387898b7745a2251427[m
+Author: nizam <anharinizam@gmail.com>
+Date:   Wed Nov 20 19:35:14 2024 +0700
+
+    menambahkan fitur mikrofon pada search
+
+[33mcommit fcfaf59333c1ea4dee55097909f33c9ffc26e62e[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sat Nov 16 20:41:46 2024 +0700
+
+    Cleaning repo
+
+[33mcommit 95ff5168e1591887c359554e592a96219b5833c8[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sat Nov 16 20:39:21 2024 +0700
+
+    done implement video player
+
+[33mcommit 1abc1fd7dae14d52df27eb5631f7fe75bf4d2645[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sat Nov 16 19:45:39 2024 +0700
+
+    Video is working but not adjusted yet
+
+[33mcommit 8fffd811eca592ce9aaac06ffa7706e160daad26[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sat Nov 16 18:50:36 2024 +0700
+
+    kontol
+
+[33mcommit f4f8438c7520c4ebe982df1fd0bcecad36816fba[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sat Nov 16 13:43:57 2024 +0700
+
+    video skibidi
+
+[33mcommit acf832cbf2544636a494c789100f4f1bf0420fa1[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sat Nov 16 13:28:08 2024 +0700
+
+    mewing
+
+[33mcommit f6cb00ec8dee56eaa7a2ee42defcfb8c0703d24f[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sat Nov 16 13:24:01 2024 +0700
+
+    skibidi
+
+[33mcommit b3d0f323186ffc7dc599cb337334bd0114eb69c6[m
+Author: Haeryz <haeriz42069@gmail.com>
+Date:   Sat Nov 16 12:24:44 2024 +0700
+
+    a

@@ -9,8 +9,6 @@ import 'package:workmanager/workmanager.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:connectivity_plus/connectivity_plus.dart';
 
 class PlanController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -25,32 +23,11 @@ class PlanController extends GetxController {
   var date = DateTime.now().add(const Duration(days: 0)).obs;
   var arrivalDate = DateTime.now().add(const Duration(days: 1)).obs;
 
-
-  final storage = GetStorage();
-  final RxBool isOnline = true.obs;
-
   final box = GetStorage();
 
   @override
   void onInit() {
     super.onInit();
-
-    _initConnectivity();
-    syncPendingTasks();
-  }
-
-  void _initConnectivity() {
-    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
-      // Periksa apakah setidaknya ada satu konektivitas yang tersedia
-      isOnline.value = result.isNotEmpty && result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi);
-      if (isOnline.value) {
-        syncPendingTasks();
-      }
-    });
-  }
-
-
-
     Connectivity()
         .onConnectivityChanged
         .listen((List<ConnectivityResult> results) {
@@ -61,9 +38,9 @@ class PlanController extends GetxController {
     });
   }
 
-
   Future<void> fetchTasks() async {
-    update();
+    // Add logic here to fetch tasks if necessary
+    update(); // Notify listeners about changes
   }
 
   void initForm({
@@ -132,95 +109,21 @@ class PlanController extends GetxController {
   }
 
   Future<void> saveTask(bool isEdit, String? documentId) async {
-  String name = controllerName.text.trim();
-  String description = controllerDescription.text.trim();
-  String taskDate = controllerDate.text.trim();
-  String startLocation = controllerStartLocation.text.trim();
-  String destination = controllerDestination.text.trim();
-  String arrivalDateText = controllerArrivalDate.text.trim();
+    String name = controllerName.text.trim();
+    String description = controllerDescription.text.trim();
+    String taskDate = controllerDate.text.trim();
+    String startLocation = controllerStartLocation.text.trim();
+    String destination = controllerDestination.text.trim();
+    String arrivalDateText = controllerArrivalDate.text.trim();
 
-
-  if (name.isEmpty || startLocation.isEmpty || destination.isEmpty || arrivalDateText.isEmpty) {
-    _showSnackBarMessage('All fields are required');
-    return;
-  }
-
-  isLoading.value = true;
-
-  try {
-    Map<String, dynamic> taskData = {
-      'name': name,
-      'description': description,
-      'date': taskDate,
-      'startLocation': startLocation,
-      'destination': destination,
-      'arrivalDate': arrivalDateText,
-      'timestamp': DateTime.now().millisecondsSinceEpoch,
-    };
-
-    final connectivityResult = await Connectivity().checkConnectivity();
-    final bool isConnected = connectivityResult != ConnectivityResult.none;
-
-    if (isConnected) {
-      if (isEdit && documentId != null) {
-        await firestore.doc('trips/$documentId').update(taskData);
-      } else {
-        await firestore.collection('trips').add(taskData);
-      }
-      _showSnackBarMessage('Task saved successfully');
-    } else {
-      // Save to local storage if offline
-      List<Map<String, dynamic>> pendingTasks = List<Map<String, dynamic>>.from(storage.read('pendingTasks') ?? []);
-      
-      if (isEdit && documentId != null) {
-        taskData['documentId'] = documentId;
-        taskData['isEdit'] = true;
-      } else {
-        taskData['isEdit'] = false;
-      }
-      
-      pendingTasks.add(taskData);
-      await storage.write('pendingTasks', pendingTasks);
-      _showSnackBarMessage('Task saved locally. Will sync when online.');
+    // Add validation for new fields here
+    if (name.isEmpty ||
+        startLocation.isEmpty ||
+        destination.isEmpty ||
+        arrivalDateText.isEmpty) {
+      _showSnackBarMessage('All fields are required');
+      return;
     }
-
-    // Clear form and go back to previous page
-    clearFormFields();
-
-    // Optional delay to ensure the user sees the message
-    await Future.delayed(const Duration(seconds: 1)); // Optional delay for better UX
-
-    // Go back to previous page
-    Get.back(result: true); // Make sure to return to the previous page
-  } catch (e) {
-    _showSnackBarMessage('Error saving task: $e');
-  } finally {
-    isLoading.value = false;
-  }
-}
-
-
-
-  Future<void> syncPendingTasks() async {
-  final List<Map<String, dynamic>> pendingTasks = List<Map<String, dynamic>>.from(storage.read('pendingTasks') ?? []);
-  
-  if (pendingTasks.isEmpty) return;
-
-  final connectivityResult = await Connectivity().checkConnectivity();
-  final bool isConnected = connectivityResult != ConnectivityResult.none;
-
-  if (!isConnected) return;
-
-  try {
-    for (var task in pendingTasks) {
-      bool isEdit = task.remove('isEdit');
-      String? documentId = task.remove('documentId');
-
-      if (isEdit && documentId != null) {
-        await firestore.doc('trips/$documentId').update(task);
-      } else {
-        await firestore.collection('trips').add(task);
-      }
 
     isLoading.value = true; // Start loading
 
@@ -258,27 +161,11 @@ class PlanController extends GetxController {
     } catch (e) {
       isLoading.value = false; // Always set loading to false on error
       _showSnackBarMessage('An error occurred: $e');
-
     }
-
-    // Clear the local storage after sync
-    await storage.write('pendingTasks', []);
-    _showSnackBarMessage('All pending tasks have been synced');
-    update();
-  } catch (e) {
-    _showSnackBarMessage('Error syncing tasks: $e');
   }
-}
-
 
   void _showSnackBarMessage(String message) {
-    Get.snackbar(
-      "Notice", 
-      message, 
-      snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.white,
-      duration: const Duration(seconds: 3),
-    );
+    Get.snackbar("Error", message, snackPosition: SnackPosition.BOTTOM);
   }
 
   void _saveLocally(Map<String, dynamic> tripData) {
@@ -304,7 +191,7 @@ class PlanController extends GetxController {
     Workmanager().registerPeriodicTask(
       "tripArrivalNotificationTask",
       "tripArrivalNotificationTask",
-      frequency: const Duration(hours: 24),
+      frequency: const Duration(hours: 24), // Runs daily
     );
   }
 
@@ -331,7 +218,8 @@ class PlanController extends GetxController {
       }
 
       Position position = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.best),
+        locationSettings:
+            const LocationSettings(accuracy: LocationAccuracy.best),
       );
 
       double latitude = position.latitude;
@@ -381,16 +269,5 @@ class PlanController extends GetxController {
         }
       }
     }
-  }
-
-  @override
-  void onClose() {
-    controllerName.dispose();
-    controllerDescription.dispose();
-    controllerDate.dispose();
-    controllerStartLocation.dispose();
-    controllerDestination.dispose();
-    controllerArrivalDate.dispose();
-    super.onClose();
   }
 }

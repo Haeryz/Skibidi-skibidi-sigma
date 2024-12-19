@@ -5,16 +5,13 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:geocoding/geocoding.dart';
+
 import '../views/location_service.dart';
 
 class SearchController extends GetxController {
   var isLocationActive = false.obs;
   var searchQuery = ''.obs;
   late stt.SpeechToText speechToText;
-  final TextEditingController controllerLocation = TextEditingController();
-  final LocationService _locationService = LocationService();
-  var locationSuggestions = <dynamic>[].obs;
-  
 
   final TextEditingController controllerLocation = TextEditingController();
   final LocationService _locationService = LocationService();
@@ -53,11 +50,6 @@ class SearchController extends GetxController {
     super.onClose();
   }
 
-
-  void setLocationFromGPS() async {
-    print("Fetching location from GPS");
-    // Implement GPS location fetching logic
-
   Future<void> setLocationFromGPS() async {
     try {
       // Cek permission
@@ -92,7 +84,6 @@ class SearchController extends GetxController {
       fullAddress.value = "Error: $e";
       print("Error fetching location: $e");
     }
-
   }
 
   Future<void> fetchLocationSuggestions(String query) async {
@@ -112,6 +103,7 @@ class SearchController extends GetxController {
   void toggleLocation() {
     isLocationActive.value = !isLocationActive.value;
     print("Location status toggled: ${isLocationActive.value}");
+
     if (isLocationActive.value) {
       playAudio('sound/livechat-129007.mp3');
     }
