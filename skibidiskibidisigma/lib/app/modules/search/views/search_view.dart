@@ -65,7 +65,11 @@ class SearchView extends GetView<local.SearchController> {
                       ),
                       if (controller.locationSuggestions.isNotEmpty)
                         ConstrainedBox(
+
+                          constraints: BoxConstraints(
+
                           constraints: const BoxConstraints(
+
                             maxHeight: 200,
                           ),
                           child: ListView.builder(
@@ -76,8 +80,9 @@ class SearchView extends GetView<local.SearchController> {
                               return ListTile(
                                 title: Text(suggestion['display_name']),
                                 onTap: () {
-                                  controller.controllerLocation.text =
-                                      suggestion['display_name'];
+
+                                  controller.controllerLocation.text = suggestion['display_name'];
+
                                   controller.locationSuggestions.clear();
                                 },
                               );
@@ -87,7 +92,11 @@ class SearchView extends GetView<local.SearchController> {
                     ],
                   );
                 }),
+
+                
                 const SizedBox(height: 20),
+                // Rest of the existing code remains the same
+
                 Obx(() {
                   return Center(
                     child: Column(
@@ -110,6 +119,7 @@ class SearchView extends GetView<local.SearchController> {
                               ),
                               const SizedBox(height: 10),
                               ElevatedButton(
+
                                 onPressed: () async {
                                   await controller.setLocationFromGPS();
                                   controller.toggleLocation();
@@ -133,6 +143,20 @@ class SearchView extends GetView<local.SearchController> {
                             ],
                           ),
                         ),
+
+                        if (controller.isLocationActive.value)
+                          const Padding(
+                            padding: EdgeInsets.all(8.0),
+                            child: Text(
+                              'Lokasi Anda sudah aktif.',
+                              style: TextStyle(color: Colors.green),
+                            ),
+                          )
+                      ],
+                    ),
+                  );
+                })
+
                         const SizedBox(height: 10),
                         if (controller.isLocationActive.value)
                         Padding(
@@ -170,6 +194,7 @@ class SearchView extends GetView<local.SearchController> {
                     ),
                   );
                 }),
+
               ],
             ),
           ),

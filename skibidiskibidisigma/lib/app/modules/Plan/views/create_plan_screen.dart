@@ -176,7 +176,10 @@ class CreatePlanScreen extends StatelessWidget {
           ),
         ),
         child: Text(isEdit ? 'UPDATE TASK' : 'CREATE TASK'),
-        onPressed: () => controller.saveTask(isEdit, documentId),
+        onPressed: () async {
+          controller.saveTask(isEdit, documentId); 
+          Get.back();
+        } 
       ),
     );
   }

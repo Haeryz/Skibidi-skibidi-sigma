@@ -72,12 +72,6 @@ class AppPages {
       transition: Transition.fade,
     ),
     GetPage(
-      name: _Paths.HOME,
-      page: () => TripView(),
-      binding: TripBinding(),
-      transition: Transition.fade,
-    ),
-    GetPage(
       name: _Paths.PLAN,
       page: () => PlanView(),
       binding: PlanBinding(),
