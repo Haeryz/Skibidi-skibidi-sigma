@@ -19,6 +19,9 @@ class HomeView extends GetView<HomeController> {
 
     // State to track description expansion
     RxBool isExpanded = false.obs;
+    
+    // Show the greeting notification when entering the home view
+    controller.showGreetingNotification();
 
     return Scaffold(
       appBar: AppBar(
