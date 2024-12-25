@@ -9,7 +9,6 @@ import '../controllers/plan_controller.dart';
 
 class PlanView extends GetView<PlanController> {
   PlanView({super.key});
-
   final GlobalKey<ScaffoldState> scaffoldState = GlobalKey<ScaffoldState>();
   final AppColor appColor = AppColor();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -19,7 +18,6 @@ class PlanView extends GetView<PlanController> {
     MediaQueryData mediaQueryData = MediaQuery.of(context);
     double widthScreen = mediaQueryData.size.width;
     double heightScreen = mediaQueryData.size.height;
-
     return Scaffold(
       key: scaffoldState,
       backgroundColor: Colors.white,
@@ -57,7 +55,6 @@ class PlanView extends GetView<PlanController> {
           color: Color.fromARGB(255, 247, 247, 247),
         ),
       ),
-
       bottomNavigationBar: NavbarView(),
     );
   }

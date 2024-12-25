@@ -66,7 +66,7 @@ void main() async {
 
   // Register controllers after Firebase initialization
   Get.put(AuthenticationController());
-  Get.put(local.SearchController());
+  Get.lazyPut<local.SearchController>(() => local.SearchController());
   Get.put(PlanController());
   Get.put(NavbarController());
   Get.put(ReviewController());
@@ -88,6 +88,14 @@ void main() async {
         importance: NotificationImportance.Max,
         channelShowBadge: true,
       ),
+      NotificationChannel(
+      channelKey: 'scheduled_channel',
+      channelName: 'Scheduled Notifications',
+      channelDescription: 'Notification channel for scheduled reminders',
+      defaultColor: const Color(0xFF9D50DD),
+      ledColor: Colors.white,
+      importance: NotificationImportance.High,
+    ),
     ],
   );
 
@@ -103,4 +111,5 @@ void main() async {
       getPages: AppPages.routes,
     ),
   );
+  
 }

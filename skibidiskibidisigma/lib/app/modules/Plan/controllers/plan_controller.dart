@@ -5,10 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:workmanager/workmanager.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 class PlanController extends GetxController {
   FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -18,29 +20,57 @@ class PlanController extends GetxController {
   final TextEditingController controllerStartLocation = TextEditingController();
   final TextEditingController controllerDestination = TextEditingController();
   final TextEditingController controllerArrivalDate = TextEditingController();
-
   var isLoading = false.obs;
   var date = DateTime.now().add(const Duration(days: 0)).obs;
   var arrivalDate = DateTime.now().add(const Duration(days: 1)).obs;
+
+  final storage = GetStorage();
+  final RxBool isOnline = true.obs;
 
   final box = GetStorage();
 
   @override
   void onInit() {
     super.onInit();
-    Connectivity()
-        .onConnectivityChanged
-        .listen((List<ConnectivityResult> results) {
-      // Assuming we care about any result that is not 'none'
-      if (results.isNotEmpty && results.first != ConnectivityResult.none) {
-        _uploadLocalData();
+
+    _initConnectivity();
+    syncPendingTasks();
+    // Initialize notifications when the app starts
+    initializeNotifications();
+  }
+
+  void initializeNotifications() {
+    // Initialize the Awesome Notifications plugin
+    AwesomeNotifications().initialize(
+      'resource://drawable/res_notification_app_icon',
+      [
+        NotificationChannel(
+          channelKey: 'scheduled_channel',
+          channelName: 'Scheduled Notifications',
+          channelDescription: 'Notification channel for scheduled reminders',
+          defaultColor: const Color(0xFF9D50DD),
+          ledColor: Colors.white,
+          importance: NotificationImportance.High,
+        ),
+      ],
+    );
+    // Check for notifications when the app is opened
+    checkTripArrivalNotifications();
+  }
+
+  void _initConnectivity() {
+    Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> result) {
+      // Check if at least one connectivity is available
+      isOnline.value = result.isNotEmpty && (result.contains(ConnectivityResult.mobile) || result.contains(ConnectivityResult.wifi));
+      if (isOnline.value) {
+        syncPendingTasks();
       }
     });
   }
 
+
   Future<void> fetchTasks() async {
-    // Add logic here to fetch tasks if necessary
-    update(); // Notify listeners about changes
+    update();
   }
 
   void initForm({
@@ -62,8 +92,7 @@ class PlanController extends GetxController {
       controllerArrivalDate.text = arrivalDate ?? '';
     } else {
       controllerDate.text = DateFormat('dd MMMM yyyy').format(this.date.value);
-      controllerArrivalDate.text =
-          DateFormat('dd MMMM yyyy').format(this.arrivalDate.value);
+      controllerArrivalDate.text = DateFormat('dd MMMM yyyy').format(this.arrivalDate.value);
     }
   }
 
@@ -74,7 +103,6 @@ class PlanController extends GetxController {
     controllerStartLocation.clear();
     controllerDestination.clear();
     controllerArrivalDate.clear();
-
     date.value = DateTime.now().add(const Duration(days: 1));
     arrivalDate.value = DateTime.now().add(const Duration(days: 1));
   }
@@ -89,8 +117,7 @@ class PlanController extends GetxController {
     );
     if (pickedArrivalDate != null) {
       arrivalDate.value = pickedArrivalDate;
-      controllerArrivalDate.text =
-          DateFormat('dd MMMM yyyy').format(arrivalDate.value);
+      controllerArrivalDate.text = DateFormat('dd MMMM yyyy').format(arrivalDate.value);
     }
   }
 
@@ -109,63 +136,114 @@ class PlanController extends GetxController {
   }
 
   Future<void> saveTask(bool isEdit, String? documentId) async {
-    String name = controllerName.text.trim();
-    String description = controllerDescription.text.trim();
-    String taskDate = controllerDate.text.trim();
-    String startLocation = controllerStartLocation.text.trim();
-    String destination = controllerDestination.text.trim();
-    String arrivalDateText = controllerArrivalDate.text.trim();
+  String name = controllerName.text.trim();
+  String description = controllerDescription.text.trim();
+  String taskDate = controllerDate.text.trim();
+  String startLocation = controllerStartLocation.text.trim();
+  String destination = controllerDestination.text.trim();
+  String arrivalDateText = controllerArrivalDate.text.trim();
 
-    // Add validation for new fields here
-    if (name.isEmpty ||
-        startLocation.isEmpty ||
-        destination.isEmpty ||
-        arrivalDateText.isEmpty) {
-      _showSnackBarMessage('All fields are required');
-      return;
-    }
-
-    isLoading.value = true; // Start loading
-
-    try {
-      Map<String, dynamic> tripData = {
-        'name': name,
-        'description': description,
-        'date': taskDate,
-        'startLocation': startLocation,
-        'destination': destination,
-        'arrivalDate': arrivalDateText,
-      };
-
-      // Check connectivity and save accordingly
-      var connectivityResult = await Connectivity().checkConnectivity();
-
-      if (connectivityResult == ConnectivityResult.none) {
-        // Save data locally when offline
-        _saveLocally(tripData);
-        isLoading.value = false; // Set loading to false immediately if offline
-        Get.snackbar("Offline", "Data saved locally. Will upload when online.");
-      } else {
-        // Save to Firestore when online
-        if (isEdit && documentId != null) {
-          DocumentReference documentTask = firestore.doc('trips/$documentId');
-          await documentTask.update(tripData);
-        } else {
-          await firestore.collection('trips').add(tripData);
-        }
-        isLoading.value = false; // Set loading to false after saving
-      }
-
-      clearFormFields();
-      Get.back(result: true);
-    } catch (e) {
-      isLoading.value = false; // Always set loading to false on error
-      _showSnackBarMessage('An error occurred: $e');
-    }
+  if (name.isEmpty || startLocation.isEmpty || destination.isEmpty || arrivalDateText.isEmpty) {
+    _showSnackBarMessage('All fields are required');
+    return;
   }
 
+  isLoading.value = true;
+
+  try {
+    Map<String, dynamic> taskData = {
+      'name': name,
+      'description': description,
+      'date': taskDate,
+      'startLocation': startLocation,
+      'destination': destination,
+      'arrivalDate': arrivalDateText,
+      'timestamp': DateTime.now().millisecondsSinceEpoch,
+    };
+
+    final connectivityResult = await Connectivity().checkConnectivity();
+    final bool isConnected = connectivityResult != ConnectivityResult.none;
+
+    if (isConnected) {
+      if (isEdit && documentId != null) {
+        await firestore.doc('trips/$documentId').update(taskData);
+      } else {
+        await firestore.collection('trips').add(taskData);
+      }
+      _showSnackBarMessage('Task saved successfully');
+    } else {
+      // Save to local storage if offline
+      List<Map<String, dynamic>> pendingTasks = List<Map<String, dynamic>>.from(storage.read('pendingTasks') ?? []);
+      
+      if (isEdit && documentId != null) {
+        taskData['documentId'] = documentId;
+        taskData['isEdit'] = true;
+      } else {
+        taskData['isEdit'] = false;
+      }
+      
+      pendingTasks.add(taskData);
+      await storage.write('pendingTasks', pendingTasks);
+      _showSnackBarMessage('Task saved locally. Will sync when online.');
+    }
+
+    // Clear form and go back to previous page
+    clearFormFields();
+
+    // Optional delay to ensure the user sees the message
+    await Future.delayed(const Duration(seconds: 1)); // Optional delay for better UX
+
+    // Go back to previous page
+    Get.back(result: true); // Make sure to return to the previous page
+  } catch (e) {
+    _showSnackBarMessage('Error saving task: $e');
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+
+
+  Future<void> syncPendingTasks() async {
+  final List<Map<String, dynamic>> pendingTasks = List<Map<String, dynamic>>.from(storage.read('pendingTasks') ?? []);
+  
+  if (pendingTasks.isEmpty) return;
+
+  final connectivityResult = await Connectivity().checkConnectivity();
+  final bool isConnected = connectivityResult != ConnectivityResult.none;
+
+  if (!isConnected) return;
+
+  try {
+    for (var task in pendingTasks) {
+      bool isEdit = task.remove('isEdit');
+      String? documentId = task.remove('documentId');
+
+      if (isEdit && documentId != null) {
+        await firestore.doc('trips/$documentId').update(task);
+      } else {
+        await firestore.collection('trips').add(task);
+      }
+    }
+
+    // Clear the local storage after sync
+    await storage.write('pendingTasks', []);
+    _showSnackBarMessage('All pending tasks have been synced');
+    update();
+  } catch (e) {
+    _showSnackBarMessage('Error syncing tasks: $e');
+  }
+}
+
+
   void _showSnackBarMessage(String message) {
-    Get.snackbar("Error", message, snackPosition: SnackPosition.BOTTOM);
+    Get.snackbar(
+      "Notice",
+      message,
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.white,
+      duration: const Duration(seconds: 3),
+    );
   }
 
   void _saveLocally(Map<String, dynamic> tripData) {
@@ -189,13 +267,13 @@ class PlanController extends GetxController {
 
   void registerBackgroundNotification() {
     Workmanager().registerPeriodicTask(
-      "tripArrivalNotificationTask",
-      "tripArrivalNotificationTask",
-      frequency: const Duration(hours: 24), // Runs daily
+      "trip arrival notification",
+      "trip arrival notification",
+      frequency: const Duration(hours: 24),
     );
   }
 
-  Future<void> setStartLocationFromGPS() async {
+Future<void> setStartLocationFromGPS() async {
     try {
       PermissionStatus permissionStatus =
           await Permission.locationWhenInUse.request();
@@ -241,33 +319,55 @@ class PlanController extends GetxController {
     }
   }
 
+
   void checkTripArrivalNotifications() async {
     final currentDate = DateTime.now();
-    final threeDaysFromNow = currentDate.add(const Duration(days: 3));
-
+    final oneDayFromNow = currentDate.add(const Duration(days: 1));
     final tripsSnapshot = await firestore.collection('trips').get();
-
     for (var doc in tripsSnapshot.docs) {
       final tripData = doc.data();
-      final arrivalDateText = tripData['arrivalDate'];
-
-      if (arrivalDateText != null) {
-        final arrivalDate = DateFormat('dd MMMM yyyy').parse(arrivalDateText);
-
-        if (arrivalDate.isBefore(threeDaysFromNow) &&
-            arrivalDate.isAfter(currentDate)) {
-          AwesomeNotifications().createNotification(
-            content: NotificationContent(
-              id: doc.id.hashCode,
-              channelKey: 'basic_channel',
-              title: 'Upcoming Trip Reminder',
-              body:
-                  'Your trip to ${tripData['destination']} is in less than 3 days!',
-              notificationLayout: NotificationLayout.BigText,
-            ),
-          );
+      final dateText = tripData['date'];
+      if (dateText != null) {
+        final tripDate = DateFormat('dd MMMM yyyy').parse(dateText);
+        if (tripDate.year == oneDayFromNow.year &&
+            tripDate.month == oneDayFromNow.month &&
+            tripDate.day == oneDayFromNow.day) {
+          // Schedule notification for the next time the app is opened in background
+          scheduleNotificationForNextOpen(doc.id, tripData['name'], tripData['destination']);
         }
       }
     }
+  }
+
+  // New method to schedule a notification for the next app open
+  void scheduleNotificationForNextOpen(String documentId, String tripName, String destination) {
+    AwesomeNotifications().createNotification(
+      content: NotificationContent(
+        id: documentId.hashCode,
+        channelKey: 'scheduled_channel',
+        title: 'Reminder: Trip Tomorrow',
+        body: 'You have a trip "$tripName" to $destination tomorrow!',
+        notificationLayout: NotificationLayout.BigText,
+      ),
+      // Schedule for when the app is next opened
+      schedule: NotificationCalendar(
+        day: 0, // 0 means today, but it will only trigger when app is opened
+        hour: 0,
+        minute: 0,
+        second: 0,
+        millisecond: 0,
+      ),
+    );
+  }
+
+  @override
+  void onClose() {
+    controllerName.dispose();
+    controllerDescription.dispose();
+    controllerDate.dispose();
+    controllerStartLocation.dispose();
+    controllerDestination.dispose();
+    controllerArrivalDate.dispose();
+    super.onClose();
   }
 }

@@ -39,7 +39,6 @@ class CreatePlanScreen extends StatelessWidget {
       destination: destination,
       arrivalDate: arrivalDate,
     );
-
     return Scaffold(
       backgroundColor: AppColor().colorPrimary,
       resizeToAvoidBottomInset: true,
@@ -103,7 +102,7 @@ class CreatePlanScreen extends StatelessWidget {
                   controller.setStartLocationFromGPS();
                 },
                 icon: const Icon(Icons.pin_drop_rounded)),
-          ), // Use the autocomplete widget here
+          ),
           LocationAutocomplete(
             controller: controller.controllerDestination,
             suffixIcon: IconButton(
@@ -111,7 +110,7 @@ class CreatePlanScreen extends StatelessWidget {
                   Get.snackbar('test', 'balls');
                 },
                 icon: const Icon(Icons.pin_drop_rounded)),
-          ), // Use the autocomplete widget here
+          ),
         ],
       ),
     );
@@ -177,9 +176,9 @@ class CreatePlanScreen extends StatelessWidget {
         ),
         child: Text(isEdit ? 'UPDATE TASK' : 'CREATE TASK'),
         onPressed: () async {
-          controller.saveTask(isEdit, documentId); 
+          controller.saveTask(isEdit, documentId);
           Get.back();
-        } 
+        },
       ),
     );
   }
